@@ -46,10 +46,11 @@ yarn build
 
 ### Making a new release
 
-update the version with this command (it also creates a git tag)
+Bump the version with this command (it also creates a git tag)
 
 ```sh
 yarn version --patch # or --minor or --major
+git push && git push --tags
 ```
 
 if you want you can also package it:
