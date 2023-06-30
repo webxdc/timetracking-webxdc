@@ -1,0 +1,50 @@
+{
+  "name": "timetracking-webxdc",
+  "private": true,
+  "version": "0.0.7",
+  "type": "module",
+  "scripts": {
+    "unit-tests": "ava",
+    "test": "tsc && yarn run unit-tests && yarn run check-formatting",
+    "check-formatting": "yarn prettier -c \"src/**\" *.html *.md *.json *.js *.ts",
+    "fix-formatting": "yarn prettier -w \"src/**\" *.html *.md *.json *.js *.ts",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "install": "yarn update-disclaimer",
+    "update-disclaimer": "yarn licenses list > public/DependencyLicenses.txt"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.12",
+    "@headlessui/tailwindcss": "^0.1.3",
+    "@heroicons/react": "^2.0.16",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tanstack/react-virtual": "^3.0.0-beta.54",
+    "chart.js": "^4.3.0",
+    "chartjs-adapter-luxon": "^1.3.1",
+    "chartjs-chart-matrix": "^2.0.1",
+    "daisyui": "^3.0.20",
+    "luxon": "^3.2.1",
+    "prettier": "^2.8.4",
+    "prettier-plugin-tailwindcss": "^0.2.3",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.0",
+    "vite-plugin-zip-pack": "^1.0.5",
+    "zustand": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.2.0",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "autoprefixer": "^10.4.13",
+    "ava": "^5.3.0",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.3",
+    "vite": "^4.1.0"
+  }
+}

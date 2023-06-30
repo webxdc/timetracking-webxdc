@@ -1,0 +1,8 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.basic-btn {
+  @apply m-3 rounded bg-blue-500 px-3 py-1.5 text-white hover:bg-blue-700 disabled:bg-gray-700 disabled:hover:bg-gray-700;
+}
