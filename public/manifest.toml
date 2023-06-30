@@ -2,4 +2,4 @@ name = "TimeTracking 🕰️"
 description = "Track and analyze your project-/work-times easialy across multiple devices  with this webxdc app."
 
 version = 1
-# source_code_url = "https://github.com/"
+source_code_url = "https://github.com/webxdc/timetracking-webxdc"
