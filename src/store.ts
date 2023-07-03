@@ -177,6 +177,13 @@ export const useStore = create<Store>((set, get) => ({
       });
       get().refreshMonthsWithEntry();
     } else if (action.type === UpdateActionType.StartEntryType) {
+      if (get().entries.findIndex(({ id }) => id === action.id) !== -1) {
+        console.warn(
+          "Ignoring adding event with an id that already exists: ",
+          action.id
+        );
+        return;
+      }
       const { id, label, ts: start_ts } = action;
       const newEntry: TaskEntry = {
         id,
