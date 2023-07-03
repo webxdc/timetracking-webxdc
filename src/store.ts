@@ -475,11 +475,16 @@ if (localStorage.getItem("devmode") === "true") {
 }
 
 let initialized = false;
+let initialisation_started = false;
 
 export async function init() {
   if (initialized) {
     return;
   }
+  if (initialisation_started) {
+    throw new Error("initialisation was already started");
+  }
+  initialisation_started = true;
   await window.webxdc.setUpdateListener((update) => {
     useStore.getState().digestUpdate(update.payload);
 
