@@ -195,7 +195,7 @@ export function TrackPage() {
           Click play on a task here to quick start it. The displayed time is the
           time that was spent on this task in the time frame selected above.
         </p>
-        <div className="grow overflow-y-scroll">
+        <div className="grow overflow-y-scroll overscroll-auto">
           <div className="text-gray-800 dark:text-gray-200">
             {quick_tasks_today.map((task) => {
               const timeSpend =

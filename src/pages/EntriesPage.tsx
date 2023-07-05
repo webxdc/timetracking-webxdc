@@ -80,7 +80,10 @@ export function EntriesPage({
           />
         </label>
       </div>
-      <div ref={parentRef} className="h-full w-full flex-grow overflow-auto">
+      <div
+        ref={parentRef}
+        className="h-full w-full flex-grow overflow-auto overscroll-auto"
+      >
         <div
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`,
