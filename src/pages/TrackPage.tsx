@@ -111,6 +111,8 @@ export function TrackPage() {
     open_entries[open_entries.length - 1];
   const labelRef = useRef<HTMLInputElement>(null);
   const auto_complete = localStorage.getItem("autocomplete_enabled") === "true";
+  const hide_track_page_stats =
+    localStorage.getItem("hide_track_page_stats") === "true";
   const [failedToEndEntry, setFailedToEndEntry] = useState<TaskEntry | null>(
     null
   );
@@ -154,9 +156,11 @@ export function TrackPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="self-center">
-        <QuickStats />
-      </div>
+      {!hide_track_page_stats && (
+        <div className="self-center">
+          <QuickStats />
+        </div>
+      )}
       <div className="flex grow flex-col overflow-hidden">
         <div className="mx-2 mt-2 flex items-center">
           <h2 className="text-lg font-medium">Last Tasks</h2>
