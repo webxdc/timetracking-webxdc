@@ -26,6 +26,14 @@ export function MorePage() {
     internal_set_autocomplete(value);
   };
 
+  const [hide_track_page_stats, internal_set_hide_track_page_stats] = useState(
+    localStorage.getItem("hide_track_page_stats") === "true"
+  );
+  const setHideTrackPageStats = (value: boolean) => {
+    localStorage.setItem("hide_track_page_stats", String(value));
+    internal_set_hide_track_page_stats(value);
+  };
+
   const importFiles = async (format: "BotFormat" | "AppFormat") => {
     let files = await window.webxdc.importFiles({
       extensions: [".json"],
@@ -121,6 +129,14 @@ export function MorePage() {
           type="checkbox"
           checked={auto_complete}
           onChange={() => setAutoComplete(!auto_complete)}
+        />
+      </label>
+      <label className="label cursor-pointer">
+        <span className="label-text">Hide Stats Summary on Track Page</span>
+        <input
+          type="checkbox"
+          checked={hide_track_page_stats}
+          onChange={() => setHideTrackPageStats(!hide_track_page_stats)}
         />
       </label>
       <h1 className="text-xl">Import / Export</h1>
