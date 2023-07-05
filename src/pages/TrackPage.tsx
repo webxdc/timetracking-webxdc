@@ -161,7 +161,7 @@ export function TrackPage() {
         <div className="mx-2 mt-2 flex items-center">
           <h2 className="text-lg font-medium">Last Tasks</h2>
           <div className="flex-grow"></div>
-          <div className="flex">
+          <div className="latest-tasks-timerange flex">
             {timeRanges.map((range, index, array) => {
               let border =
                 array.length - 1 === index

@@ -6,3 +6,23 @@
 .basic-btn {
   @apply m-3 rounded bg-blue-500 px-3 py-1.5 text-white hover:bg-blue-700 disabled:bg-gray-700 disabled:hover:bg-gray-700;
 }
+
+@media only screen and (max-width: 500px) {
+  .self-center,
+  .self-center .stats {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+  .self-center .stats .stat {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .self-center .stats .stat .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  .latest-tasks-timerange {
+    font-size: smaller;
+  }
+}
