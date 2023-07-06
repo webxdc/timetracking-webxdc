@@ -58,7 +58,7 @@ function App() {
   return (
     <div className="flex h-full flex-col" style={{ maxHeight: "100vh" }}>
       <div
-        className="relative flex-grow overflow-scroll"
+        className="relative flex-grow overflow-auto"
         style={{ maxHeight: "calc(100vh - 4rem)" }}
       >
         <Page />
