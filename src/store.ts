@@ -108,7 +108,10 @@ interface Store {
   labels: { [label: string]: LabelData | undefined };
   /** months that have events */
   monthsWithEntries: { month: number; year: number }[];
-  digestUpdate(update: StatusUpdate): void;
+  digestUpdate(
+    update: StatusUpdate,
+    is_old_out_of_order_update?: boolean
+  ): void;
   /** gets all entries that have no end, sorted by start time */
   getOpenEntries(): TaskEntry[];
   /** all entries that are neither a break nor deleted */
@@ -131,6 +134,7 @@ interface Store {
   internal_lastEntries: TaskEntry[];
   /** cache for the filtered entries so that it's immutable */
   internal_lastEntries_filtered: TaskEntry[];
+  internal_outOfOrderStatusUpdate: StatusUpdate[];
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -138,7 +142,8 @@ export const useStore = create<Store>((set, get) => ({
   actionHistory: [],
   labels: {},
   monthsWithEntries: [],
-  digestUpdate(update: StatusUpdate) {
+  internal_outOfOrderStatusUpdate: [],
+  digestUpdate(update: StatusUpdate, is_old_out_of_order_update) {
     const { action } = update;
     if (action.type === UpdateActionType.ImportType) {
       set((store) => {
@@ -217,13 +222,19 @@ export const useStore = create<Store>((set, get) => ({
         const historyEntry: ActionHistoryEntry = {
           id: action.id,
           who: update.user,
-          what: `tried to end entry but it does not exist (yet?), ignoring action: ${JSON.stringify(
+          what: `${
+            is_old_out_of_order_update ? "[trying again]" : ""
+          }tried to end entry but it does not exist (yet?), saving action for later: ${JSON.stringify(
             action
           )}`,
           when: update.action_ts,
         };
         set((state) => ({
           actionHistory: [...state.actionHistory, historyEntry],
+          internal_outOfOrderStatusUpdate: [
+            ...state.internal_outOfOrderStatusUpdate,
+            update,
+          ],
         }));
         return;
       }
@@ -261,13 +272,19 @@ export const useStore = create<Store>((set, get) => ({
         const historyEntry: ActionHistoryEntry = {
           id: action.id,
           who: update.user,
-          what: `tried to delete entry but it does not exist (yet?), ignoring action: ${JSON.stringify(
+          what: `${
+            is_old_out_of_order_update ? "[trying again]" : ""
+          }tried to delete entry but it does not exist (yet?), saving action for later: ${JSON.stringify(
             action
           )}`,
           when: update.action_ts,
         };
         set((state) => ({
           actionHistory: [...state.actionHistory, historyEntry],
+          internal_outOfOrderStatusUpdate: [
+            ...state.internal_outOfOrderStatusUpdate,
+            update,
+          ],
         }));
         return;
       }
@@ -297,13 +314,19 @@ export const useStore = create<Store>((set, get) => ({
         const historyEntry: ActionHistoryEntry = {
           id: action.id,
           who: update.user,
-          what: `tried to edit entry but it does not exist (yet?), ignoring action: ${JSON.stringify(
+          what: `${
+            is_old_out_of_order_update ? "[trying again]" : ""
+          }tried to edit entry but it does not exist (yet?), saving action for later: ${JSON.stringify(
             action
           )}`,
           when: update.action_ts,
         };
         set((state) => ({
           actionHistory: [...state.actionHistory, historyEntry],
+          internal_outOfOrderStatusUpdate: [
+            ...state.internal_outOfOrderStatusUpdate,
+            update,
+          ],
         }));
         return;
       }
@@ -479,6 +502,13 @@ export const useStore = create<Store>((set, get) => ({
 
 if (localStorage.getItem("devmode") === "true") {
   (window as any).store = () => useStore.getState();
+  (window as any).actions = {
+    markEntryAsDeleted,
+    editEntry,
+    endEntry,
+    startEntry,
+    makeUpdate,
+  };
 }
 
 let initialized = false;
@@ -498,6 +528,14 @@ export async function init() {
     if (update.max_serial === update.serial) {
       // last update in batch
       // store.getState().
+
+      // try to process out of order updates again
+      const outOfOrderStatusUpdate =
+        useStore.getState().internal_outOfOrderStatusUpdate;
+      useStore.setState((_) => ({ internal_outOfOrderStatusUpdate: [] }));
+      for (const unprocessed of outOfOrderStatusUpdate) {
+        useStore.getState().digestUpdate(unprocessed);
+      }
     }
   });
   useStore.getState().refreshMonthsWithEntry();

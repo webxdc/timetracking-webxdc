@@ -21,8 +21,10 @@ export function DebugPage() {
         <p>
           You can now access the internal data store via{" "}
           <code className="rounded bg-slate-300 p-1">window.store()</code>{" "}
-          object in your dev console. Besides that you can find the complete
-          action log and some internal stats on this page:
+          object and{" "}
+          <code className="rounded bg-slate-300 p-1">window.actions</code> for
+          sending updates in your dev console. Besides that you can find the
+          complete action log and some internal stats on this page:
         </p>
 
         <table>
