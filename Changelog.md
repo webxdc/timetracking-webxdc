@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: process out of order updates again
+
 ## 0.2.0
 
 - manifest: simplify description and remove version property
