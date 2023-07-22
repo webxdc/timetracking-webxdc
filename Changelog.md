@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0
+
 - fix: process out of order updates again
 
 ## 0.2.0
