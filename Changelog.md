@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix: edit entry form visually bugs back to previous state
+
 ## 0.3.0
 
 - fix: process out of order updates again
