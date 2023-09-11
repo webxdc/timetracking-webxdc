@@ -64,6 +64,7 @@ export function EntryPage<T>({
           entry={entry}
           key={formKey}
           onSubmit={() => {
+            // make the form reset with new values so it it no longer dirty.
             setFormKey((old) => old + 1);
           }}
         />
@@ -195,8 +196,8 @@ function EntryEditForm({
       }
     }
     if (Object.keys(updated_properties).length !== 0) {
-      editEntry(entry.id, updated_properties);
-      onSubmitDone();
+      editEntry(entry.id, updated_properties).then(onSubmitDone);
+
       // selectEntry.bind(null, null) // go back to overview
     }
   };

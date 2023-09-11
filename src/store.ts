@@ -1,6 +1,7 @@
 import { DateTime, Duration } from "luxon";
 import { create } from "zustand";
 import { getEntriesInTimeframeCutToIt, getMonthsOfEntry } from "./entryMaths";
+import { ReceivedStatusUpdate } from "./webxdc";
 
 // define shorter versions so we save a tiny bit bandwich
 
@@ -514,6 +515,17 @@ if (localStorage.getItem("devmode") === "true") {
 let initialized = false;
 let initialisation_started = false;
 
+/** so functions like editEntry can know when their update was sucessfully added
+ * to avoid race conditions
+ *
+ * we can take action_ts as id should be unique enough
+ */
+let wait_for_payload_promises: {
+  action_ts: number;
+  promise_resolve: () => void;
+  resolved: boolean;
+}[] = [];
+
 export async function init() {
   if (initialized) {
     return;
@@ -522,24 +534,50 @@ export async function init() {
     throw new Error("initialisation was already started");
   }
   initialisation_started = true;
-  await window.webxdc.setUpdateListener((update) => {
-    useStore.getState().digestUpdate(update.payload);
+  await window.webxdc.setUpdateListener(
+    (update: ReceivedStatusUpdate<StatusUpdate>) => {
+      useStore.getState().digestUpdate(update.payload);
 
-    if (update.max_serial === update.serial) {
-      // last update in batch
-      // store.getState().
+      if (wait_for_payload_promises.length !== 0) {
+        for (const wait_for_payload_promise of wait_for_payload_promises) {
+          if (update.payload.action_ts === wait_for_payload_promise.action_ts) {
+            wait_for_payload_promise.promise_resolve();
+            wait_for_payload_promise.resolved = true;
+          }
+        }
+      }
 
-      // try to process out of order updates again
-      const outOfOrderStatusUpdate =
-        useStore.getState().internal_outOfOrderStatusUpdate;
-      useStore.setState((_) => ({ internal_outOfOrderStatusUpdate: [] }));
-      for (const unprocessed of outOfOrderStatusUpdate) {
-        useStore.getState().digestUpdate(unprocessed);
+      if (update.max_serial === update.serial) {
+        // last update in batch
+        // store.getState().
+
+        // try to process out of order updates again
+        const outOfOrderStatusUpdate =
+          useStore.getState().internal_outOfOrderStatusUpdate;
+        useStore.setState((_) => ({ internal_outOfOrderStatusUpdate: [] }));
+        for (const unprocessed of outOfOrderStatusUpdate) {
+          useStore.getState().digestUpdate(unprocessed);
+        }
+
+        wait_for_payload_promises = wait_for_payload_promises.filter(
+          ({ resolved }) => !resolved
+        );
       }
     }
-  });
+  );
   useStore.getState().refreshMonthsWithEntry();
   initialized = true;
+}
+
+// todo maybe rather integrate all this in a wrapper around window.webxdc.sendUpdate
+function makeWaitForPayloadPromise(action_ts: number): Promise<void> {
+  return new Promise((resolve, _reject) => {
+    wait_for_payload_promises.push({
+      action_ts,
+      promise_resolve: resolve,
+      resolved: false,
+    });
+  });
 }
 
 function makeUpdate(action: StatusUpdateAction): StatusUpdate {
@@ -580,18 +618,26 @@ export function startEntry(label: string) {
   );
 }
 
-export function editEntry(id: string, changed: Omit<EditEntry, "type" | "id">) {
+/** edits an entry,
+ * returns a promise that gets resolved when the edit was received */
+export function editEntry(
+  id: string,
+  changed: Omit<EditEntry, "type" | "id">
+): Promise<void> {
+  let payload = makeUpdate({
+    type: UpdateActionType.EditEntryType,
+    ...changed,
+    id,
+  });
+  const promise = makeWaitForPayloadPromise(payload.action_ts);
   window.webxdc.sendUpdate(
     {
-      payload: makeUpdate({
-        type: UpdateActionType.EditEntryType,
-        ...changed,
-        id,
-      }),
+      payload,
     },
     `Timetracking entry '${id}' edited: ${JSON.stringify(changed)}
     ).toLocaleString()}`
   );
+  return promise;
 }
 
 export function endEntry(
