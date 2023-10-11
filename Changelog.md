@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0
+
 - fix: edit entry form visually bugs back to previous state
 - changed: use webxdc types npm package
 - optimize icon
