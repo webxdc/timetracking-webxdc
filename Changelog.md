@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix: edit entry form visually bugs back to previous state
+- changed: use webxdc types npm package
 
 ## 0.3.0
 
