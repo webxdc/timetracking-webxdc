@@ -33,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.0",
     "vite-plugin-zip-pack": "^1.0.5",
+    "webxdc-types": "^1.0.0",
     "zustand": "^4.3.3"
   },
   "devDependencies": {

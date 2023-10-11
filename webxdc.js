@@ -1,6 +1,6 @@
 // debug friend: document.writeln(JSON.stringify(value));
 //@ts-check
-/** @type {import('./webxdc').Webxdc<any>} */
+/** @type {import('webxdc-types').Webxdc<any>} */
 window.webxdc = (() => {
   var updateListener = (_) => {};
   var updatesKey = "__xdcUpdatesKey__";
