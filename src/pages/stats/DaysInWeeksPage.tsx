@@ -45,7 +45,7 @@ export function DaysInWeeksPage() {
   const rowVirtualizer = useVirtualizer({
     count: weeks.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 206,
+    estimateSize: () => 246,
     overscan: 5,
     getItemKey: (index) => weeks[index].key,
   });
