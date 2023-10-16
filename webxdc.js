@@ -204,7 +204,7 @@ window.alterXdcApp = () => {
   var styleMenuLink =
     "color:#fff; text-decoration: none; vertical-align: middle";
   var styleAppIcon =
-    "height: 1.5em; width: 1.5em; margin-right: 0.5em; border-radius:10%; vertical-align: middle";
+    "height: 1.5em; width: 1.5em; margin-right: 0.5em; border-radius:10%; vertical-align: middle; display:inline-block";
   var title = document.getElementsByTagName("title")[0];
   if (typeof title == "undefined") {
     title = document.createElement("title");
@@ -214,20 +214,13 @@ window.alterXdcApp = () => {
 
   if (window.webxdc.selfName === "device0") {
     var div = document.createElement("div");
-    div.innerHTML =
-      '<div id="webxdc-panel" style="' +
-      styleControlPanel +
-      '">' +
-      '<a href="javascript:window.addXdcPeer();" style="' +
-      styleMenuLink +
-      '">Add Peer</a>' +
-      '<span style="' +
-      styleMenuLink +
-      '"> | </span>' +
-      '<a id="webxdc-panel-clear" href="javascript:window.clearXdcStorage();" style="' +
-      styleMenuLink +
-      '">Clear Storage</a>' +
-      "<div>";
+    div.innerHTML = `<div id="webxdc-panel" style="${styleControlPanel}">
+        <a href="javascript:window.closeWebxdcPanel();" style="float:right">X</a>
+        <br />
+        <a href="javascript:window.addXdcPeer();" style="${styleMenuLink}">Add Peer</a>
+        <span style="${styleMenuLink}"> | </span>
+        <a id="webxdc-panel-clear" href="javascript:window.clearXdcStorage();" style="${styleMenuLink}">Clear Storage</a>
+      <div>`;
     var controlPanel = div.firstChild;
 
     function loadIcon(name) {
@@ -246,3 +239,7 @@ window.alterXdcApp = () => {
 };
 
 window.addEventListener("load", window.alterXdcApp);
+
+window.closeWebxdcPanel = () => {
+  document.getElementById("webxdc-panel").style.display = "none";
+};
