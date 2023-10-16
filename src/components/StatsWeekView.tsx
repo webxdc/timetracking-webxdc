@@ -18,6 +18,7 @@ export function WeekView({
     total_minutes: number;
   };
   const [data, setData] = useState<DataEntry[] | null>(null);
+  const [total, setTotal] = useState<Duration>(Duration.fromMillis(0));
   const entries = useStore((store) => store.getTrackedEntries());
 
   const [timeSpan] = useState([
@@ -76,6 +77,13 @@ export function WeekView({
     }
 
     setData(dataEntries);
+    const total_minutes = dataEntries.reduce((p, c) => p + c.total_minutes, 0);
+    setTotal(
+      Duration.fromObject({ minutes: total_minutes }).shiftTo(
+        "hours",
+        "minutes"
+      )
+    );
   }, [`${entries.length}`, timeSpan[0], timeSpan[1]]);
 
   const now = DateTime.now();
@@ -94,7 +102,7 @@ export function WeekView({
   const letterWidth = 12;
 
   return (
-    <div className="m-2">
+    <div className="m-2" style={{ minHeight: 246 }}>
       <table
         className="weekdays-chart charts-css bar show-heading show-labels labels-align-start data-spacing-1 datasets-spacing-2"
         style={{ "--labels-size": `${max_label_length * letterWidth}px` }}
@@ -133,6 +141,11 @@ export function WeekView({
           })}
         </tbody>
       </table>
+      <div className="flex w-full justify-end">
+        <div className="self-end">
+          Total: {total.toHuman({ unitDisplay: "long" })}
+        </div>
+      </div>
     </div>
   );
 }
