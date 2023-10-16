@@ -18,7 +18,7 @@ export function DaysInWeeksPage() {
   const { weeks } = useMemo(() => {
     const startTime =
       oldest_entry_start || DateTime.now().minus({ weeks: 1 }).toMillis();
-    const now = DateTime.now();
+    const now = DateTime.now().endOf("week");
     const backThen = DateTime.fromMillis(startTime);
     let pointer = backThen;
     let weeks: { year: number; weekNumber: number; key: string }[] = [];
@@ -34,7 +34,7 @@ export function DaysInWeeksPage() {
         key: String(pointer.toMillis()),
       });
       pointer = pointer.plus({ weeks: 1 });
-      console.log(pointer.diff(now).weeks);
+      // console.log(pointer.diff(now).weeks);
     }
     weeks.reverse();
     return { weeks };
