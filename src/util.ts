@@ -27,3 +27,15 @@ export function wrapPromise<T>(promise: Promise<T>) {
 
   return { read };
 }
+
+// https://stackoverflow.com/a/13440842/7655232
+export function arrayMin(arr: number[]) {
+  var len = arr.length,
+    min = Infinity;
+  while (len--) {
+    if (arr[len] < min) {
+      min = arr[len];
+    }
+  }
+  return min;
+}

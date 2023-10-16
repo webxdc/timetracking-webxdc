@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add Stats for time on days in week
+
 ## 0.4.0
 
 - fix: edit entry form visually bugs back to previous state
