@@ -341,6 +341,10 @@
 │  │  ├─ URL: git+https://github.com/kurkle/chartjs-chart-matrix.git
 │  │  ├─ VendorName: Jukka Kurkela
 │  │  └─ VendorUrl: https://chartjs-chart-matrix.pages.dev/
+│  ├─ charts.css@1.0.1
+│  │  ├─ URL: git+https://github.com/ChartsCSS/charts.css.git
+│  │  ├─ VendorName: Rami Yushuvaev
+│  │  └─ VendorUrl: https://chartscss.org/
 │  ├─ chokidar@3.5.3
 │  │  ├─ URL: git+https://github.com/paulmillr/chokidar.git
 │  │  ├─ VendorName: Paul Miller

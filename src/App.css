@@ -1,3 +1,4 @@
+@import "charts.css";
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -29,4 +30,10 @@ html {
   .latest-tasks-timerange {
     font-size: smaller;
   }
+}
+
+/* Data */
+.weekdays-chart tbody td {
+  border-radius: 4px;
+  --color: rgb(74, 180, 241);
 }

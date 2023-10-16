@@ -679,6 +679,11 @@ chartjs-chart-matrix@^2.0.1:
   resolved "https://registry.npmjs.org/chartjs-chart-matrix/-/chartjs-chart-matrix-2.0.1.tgz"
   integrity sha512-BGfeY+/PHnITyDlc7WfnKJ1RyOfgOzIqWp/gxzzl7pUjyoGzHDcw51qd2xJF9gdT9Def7ZwOnOMm8GJUXDxI0w==
 
+charts.css@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/charts.css/-/charts.css-1.0.1.tgz#9ec305e3d56ea37d9bf86dbf09e983fa93c43a08"
+  integrity sha512-aP6a7Mf59mNe1cqdZidbPHwTg9CKnqLPM1quN+UFUXxqro4TPFv6N7uVujOZ5JJMdELc/P53ub2XbiyCVcnQ3A==
+
 chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz"

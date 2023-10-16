@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
 
 import "./App.css";
 import {
@@ -16,14 +16,25 @@ import { init, TaskEntry } from "./store";
 import { DebugPage } from "./pages/DebugPage";
 import { EntryPage } from "./pages/EntryPage";
 import { StatisticsPage } from "./pages/StatisticsPage";
+import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
 
 const initializeStore = wrapPromise(init());
 
+type AppPageName =
+  | "track"
+  | "entries"
+  | "stats"
+  | "stats/weeks"
+  | "more"
+  | "debug";
+
+export const NavigationContext = createContext({
+  navigate: (destination: AppPageName) => {},
+});
+
 function App() {
   initializeStore.read();
-  const [activePage, changePage] = useState<
-    "track" | "entries" | "stats" | "more" | "debug"
-  >("track");
+  const [activePage, changePage] = useState<AppPageName>("track");
 
   const devmode = localStorage.getItem("devmode") === "true" || false;
 
@@ -44,6 +55,9 @@ function App() {
     case "stats":
       Page = StatisticsPage;
       break;
+    case "stats/weeks":
+      Page = DaysInWeeksPage;
+      break;
     case "more":
       Page = MorePage;
       break;
@@ -61,7 +75,9 @@ function App() {
         className="relative flex-grow overflow-auto"
         style={{ maxHeight: "calc(100vh - 4rem)" }}
       >
-        <Page />
+        <NavigationContext.Provider value={{ navigate: changePage }}>
+          <Page />
+        </NavigationContext.Provider>
       </div>
       <div className="btm-nav" style={{ position: "relative" }}>
         <button
@@ -85,7 +101,7 @@ function App() {
         </button>
         <button
           disabled={!devmode}
-          className={activePage === "stats" ? "active" : ""}
+          className={activePage.startsWith("stats") ? "active" : ""}
           onClick={() => changePage("stats")}
         >
           <ChartPieIcon className="h-5 w-5" />

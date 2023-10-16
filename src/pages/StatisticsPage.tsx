@@ -12,70 +12,60 @@ import {
   Filler,
   BarController,
   BarElement,
+  Legend,
 } from "chart.js";
 import "chartjs-adapter-luxon";
 
 ChartJS.register(
-  // BarController,
-  // BarElement,
+  BarController,
+  BarElement,
+
   // LineController,
   // LineElement,
   // PointElement,
-  // LinearScale,
-  // Title,
-  // CategoryScale,
+  LinearScale,
+  Title,
+  CategoryScale,
   TimeScale,
-  Tooltip
-  // Filler
+  Tooltip,
+  // Filler,
+  Legend
 );
 
 import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
 
 ChartJS.register(MatrixController, MatrixElement);
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "../store";
 import { DateTime, Duration } from "luxon";
 import {
   getEntriesInTimeframeCutToIt,
   getEntriesTouchingTimeframe,
 } from "../entryMaths";
+import { NavigationContext } from "../App";
+import { WeekView } from "../components/StatsWeekView";
 
 export function StatisticsPage() {
-  // const data = [
-  //   { year: 2010, count: 10 },
-  //   { year: 2011, count: 20 },
-  //   { year: 2012, count: 15 },
-  //   { year: 2013, count: 25 },
-  //   { year: 2014, count: 22 },
-  //   { year: 2015, count: 30 },
-  //   { year: 2016, count: 28 },
-  // ];
+  // const weekview =
+
+  const currentYear = DateTime.now().year;
+  const currentWeek = DateTime.now().weekNumber;
+  const { navigate } = useContext(NavigationContext);
 
   return (
     <div>
-      <h1>Stats</h1>
-
+      <h1 className="p-1 text-center text-lg font-medium">Stats</h1>
+      <hr />
       <ActivityMap />
-      {/* <Chart
-        options={{ responsive: true }}
-        type={"bar"}
-        data={{
-          labels: data.map((row) => row.year),
-          datasets: [
-            {
-              // data: data.map((row) => row.count),
-              borderSkipped: false,
-              data: [
-                { x: 6, y: 4 },
-                { x: 6, y: 2 },
-                { x: 2, y: 2 },
-              ],
-              borderRadius: 6,
-            },
-          ],
-        }}
-      /> */}
+      <hr />
+      <WeekView year={currentYear} week_number={currentWeek} />
+      <WeekView year={currentYear} week_number={currentWeek - 1} />
+      <div className="m-2">
+        <hr />
+        <button onClick={() => navigate("stats/weeks")}>View All Weeks</button>
+        <hr />
+      </div>
     </div>
   );
 }
