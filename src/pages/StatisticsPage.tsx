@@ -24,11 +24,26 @@ import {
 import { NavigationContext } from "../App";
 import { WeekView } from "../components/StatsWeekView";
 import { QuickStats } from "../components/TrackPageStats";
+import { MonthView } from "../components/StatsMonthViewDays";
 
 export function StatisticsPage() {
-  const currentYear = DateTime.now().year;
-  const currentWeek = DateTime.now().weekNumber;
+  const now = DateTime.now();
+  const currentYear = now.year;
+  const currentWeek = now.weekNumber;
+  const currentMonth = now.month;
   const { navigate } = useContext(NavigationContext);
+
+  const [timePerDayMode, setTimePerDayMode] = useState<"week" | "month">(
+    "week"
+  );
+
+  const timePerDayModeOptions: {
+    label: string;
+    value: typeof timePerDayMode;
+  }[] = [
+    { label: "Week", value: "week" },
+    { label: "Month", value: "month" },
+  ];
 
   return (
     <div className="flex flex-col">
@@ -38,15 +53,58 @@ export function StatisticsPage() {
         <QuickStats />
       </div>
       <hr />
-      <WeekView year={currentYear} week_number={currentWeek} />
-      <WeekView year={currentYear} week_number={currentWeek - 1} />
-      <div className="m-2">
+      <div className="mx-2 mt-2 flex items-center">
+        <h2 className="text-lg font-medium">Time Per Day</h2>
+        <div className="flex-grow"></div>
+        <div className="latest-tasks-timerange flex">
+          {timePerDayModeOptions.map((mode, index, array) => {
+            let border =
+              array.length - 1 === index
+                ? "rounded-r-lg border-l-0"
+                : index === 0
+                ? "rounded-l-lg border-r-0"
+                : "border-x-0";
+
+            let active =
+              timePerDayMode === mode.value
+                ? "bg-slate-600 hover:bg-slate-600 text-white"
+                : "";
+
+            return (
+              <button
+                key={index}
+                onClick={() => setTimePerDayMode(mode.value)}
+                className={`pv-2 border-collapse border-2 border-solid border-slate-300 px-2 py-1 font-medium hover:bg-slate-500 hover:text-white ${border} ${active}`}
+              >
+                {mode.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      {timePerDayMode === "week" && (
+        <>
+          <WeekView year={currentYear} week_number={currentWeek} />
+          <WeekView year={currentYear} week_number={currentWeek - 1} />
+        </>
+      )}
+      {timePerDayMode === "month" && (
+        <MonthView year={currentYear} month={currentMonth} />
+      )}
+      <div className="m-1">
         <hr />
         <button
           className="w-full p-2 text-start"
           onClick={() => navigate("stats/weeks")}
         >
           View All Weeks &gt;
+        </button>
+        <hr />
+        <button
+          className="w-full p-2 text-start"
+          onClick={() => navigate("stats/months")}
+        >
+          View All Months &gt;
         </button>
         <hr />
       </div>

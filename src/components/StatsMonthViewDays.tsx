@@ -6,15 +6,9 @@ import {
 } from "../entryMaths";
 import { useStore } from "../store";
 
-export const minWeekViewHeight = 246;
+export const minMonthViewHeight = 830;
 
-export function WeekView({
-  year,
-  week_number,
-}: {
-  year: number;
-  week_number: number;
-}) {
+export function MonthView({ year, month }: { year: number; month: number }) {
   type DataEntry = {
     day_name: string;
     total_minutes: number;
@@ -24,9 +18,9 @@ export function WeekView({
   const entries = useStore((store) => store.getTrackedEntries());
 
   const [timeSpan] = useState([
-    DateTime.fromObject({ weekNumber: week_number }).startOf("day").toMillis(),
-    DateTime.fromObject({ weekNumber: week_number })
-      .plus(Duration.fromObject({ week: 1 }))
+    DateTime.fromObject({ month }).startOf("day").toMillis(),
+    DateTime.fromObject({ month })
+      .plus(Duration.fromObject({ month: 1 }))
       .endOf("day")
       .toMillis(),
   ]);
@@ -65,13 +59,15 @@ export function WeekView({
         .reduce((previous, current) => previous + current, 0);
 
       dataEntries.push({
-        day_name: startOfDay.weekdayLong || String(startOfDay.weekday),
+        day_name: `${String(startOfDay.day).padStart(2, "0")}. ${
+          startOfDay.weekdayShort || String(startOfDay.weekday)
+        }`,
         total_minutes: Math.floor(timeSpentThatDay / 60000), // convert to minutes per day
       });
 
       working_day = working_day.plus({ days: 1 });
     }
-    console.log(dataEntries);
+    // console.log(dataEntries);
 
     // workaround remove last entry if it's over one week
     if (dataEntries.length > 7) {
@@ -89,9 +85,9 @@ export function WeekView({
   }, [`${entries.length}`, timeSpan[0], timeSpan[1]]);
 
   const now = DateTime.now();
-  const isCurrentWeek = now.weekNumber === week_number && now.year === year;
-  const caption = `${year} Week ${week_number} ${
-    isCurrentWeek ? " (This Week)" : ""
+  const isCurrentMonth = now.month === month && now.year === year;
+  const caption = `${year} ${DateTime.fromObject({ month }).monthLong} ${
+    isCurrentMonth ? " (This Month)" : ""
   }`;
 
   const maxFeasibleMinutesPerDay = 14 * 60;
@@ -101,12 +97,12 @@ export function WeekView({
       ?.map(({ day_name }) => day_name.length)
       .sort()
       .reverse()[0] || 40;
-  const letterWidth = 12;
+  const letterWidth = 11;
 
   return (
-    <div className="m-2" style={{ minHeight: minWeekViewHeight }}>
+    <div className="m-2" style={{ minHeight: minMonthViewHeight }}>
       <table
-        className="weekdays-chart charts-css bar show-heading show-labels labels-align-start data-spacing-1 datasets-spacing-2"
+        className="monthdays-chart charts-css bar show-heading show-labels labels-align-start data-spacing-1 datasets-spacing-2"
         style={{ "--labels-size": `${max_label_length * letterWidth}px` }}
       >
         <caption>{caption}</caption>

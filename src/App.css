@@ -33,13 +33,15 @@ html {
 }
 
 /* Data */
-.weekdays-chart tbody td {
+.weekdays-chart tbody td,
+.monthdays-chart tbody td {
   border-radius: 4px;
   --color: rgb(74, 180, 241);
 }
 
 @media (prefers-color-scheme: dark) {
-  .weekdays-chart tbody td {
+  .weekdays-chart tbody td,
+  .monthdays-chart tbody td {
     --color: rgb(0, 69, 198);
   }
 }

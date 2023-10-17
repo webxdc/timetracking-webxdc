@@ -2,52 +2,55 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { DateTime } from "luxon";
 import { useContext, useMemo, useRef } from "react";
 import { NavigationContext } from "../../App";
-import { minWeekViewHeight, WeekView } from "../../components/StatsWeekView";
+import {
+  minMonthViewHeight,
+  MonthView,
+} from "../../components/StatsMonthViewDays";
 import { useStore } from "../../store";
 import { arrayMin } from "../../util";
 
 /** cap it at a 100years so it does not completely freeze in case of failure */
-const maxWeeks = 5100;
+const maxMonths = 1200;
 
-export function DaysInWeeksPage() {
+export function DaysInMonthsPage() {
   // get oldest entry
   const oldest_entry_start = useStore((store) =>
     arrayMin(store.getTrackedEntries().map((t) => t.start))
   );
 
-  const { weeks } = useMemo(() => {
+  const { months } = useMemo(() => {
     const startTime =
-      oldest_entry_start || DateTime.now().minus({ weeks: 1 }).toMillis();
-    const now = DateTime.now().endOf("week");
+      oldest_entry_start || DateTime.now().minus({ month: 1 }).toMillis();
+    const now = DateTime.now().endOf("month");
     const backThen = DateTime.fromMillis(startTime);
     let pointer = backThen;
-    let weeks: { year: number; weekNumber: number; key: string }[] = [];
+    let months: { year: number; month: number; key: string }[] = [];
     let i = 0;
     while (pointer.toMillis() < now.toMillis()) {
       i++;
-      if (i > maxWeeks) {
+      if (i > maxMonths) {
         break;
       }
-      weeks.push({
+      months.push({
         year: pointer.year,
-        weekNumber: pointer.weekNumber,
+        month: pointer.month,
         key: String(pointer.toMillis()),
       });
-      pointer = pointer.plus({ weeks: 1 });
-      // console.log(pointer.diff(now).weeks);
+      pointer = pointer.plus({ month: 1 });
+      // console.log(pointer.diff(now).months);
     }
-    weeks.reverse();
-    return { weeks };
+    months.reverse();
+    return { months };
   }, [oldest_entry_start]);
 
   const parentRef = useRef<HTMLDivElement | null>(null);
 
   const rowVirtualizer = useVirtualizer({
-    count: weeks.length,
+    count: months.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => minWeekViewHeight,
+    estimateSize: () => minMonthViewHeight,
     overscan: 5,
-    getItemKey: (index) => weeks[index].key,
+    getItemKey: (index) => months[index].key,
   });
 
   const { navigate } = useContext(NavigationContext);
@@ -87,9 +90,9 @@ export function DaysInWeeksPage() {
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
-              <WeekView
-                year={weeks[virtualRow.index].year}
-                week_number={weeks[virtualRow.index].weekNumber}
+              <MonthView
+                year={months[virtualRow.index].year}
+                month={months[virtualRow.index].month}
               />
             </div>
           ))}

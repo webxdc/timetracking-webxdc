@@ -17,6 +17,7 @@ import { DebugPage } from "./pages/DebugPage";
 import { EntryPage } from "./pages/EntryPage";
 import { StatisticsPage } from "./pages/StatisticsPage";
 import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
+import { DaysInMonthsPage } from "./pages/stats/DaysInMonthsPage";
 
 const initializeStore = wrapPromise(init());
 
@@ -25,6 +26,7 @@ type AppPageName =
   | "entries"
   | "stats"
   | "stats/weeks"
+  | "stats/months"
   | "more"
   | "debug";
 
@@ -57,6 +59,9 @@ function App() {
       break;
     case "stats/weeks":
       Page = DaysInWeeksPage;
+      break;
+    case "stats/months":
+      Page = DaysInMonthsPage;
       break;
     case "more":
       Page = MorePage;
