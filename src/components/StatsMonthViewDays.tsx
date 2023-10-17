@@ -102,7 +102,7 @@ export function MonthView({ year, month }: { year: number; month: number }) {
   return (
     <div className="m-2" style={{ minHeight: minMonthViewHeight }}>
       <table
-        className="monthdays-chart charts-css bar show-heading show-labels labels-align-start data-spacing-1 datasets-spacing-2"
+        className="monthdays-chart charts-css bar show-heading show-labels labels-align-start datasets-spacing-2"
         style={{ "--labels-size": `${max_label_length * letterWidth}px` }}
       >
         <caption>{caption}</caption>
