@@ -63,7 +63,12 @@ export function StatisticsPage() {
       <WeekView year={currentYear} week_number={currentWeek - 1} />
       <div className="m-2">
         <hr />
-        <button onClick={() => navigate("stats/weeks")}>View All Weeks</button>
+        <button
+          className="w-full p-2 text-start"
+          onClick={() => navigate("stats/weeks")}
+        >
+          View All Weeks &gt;
+        </button>
         <hr />
       </div>
     </div>

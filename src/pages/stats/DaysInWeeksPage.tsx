@@ -54,8 +54,11 @@ export function DaysInWeeksPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <button onClick={() => navigate("stats")}>
-        Back To Statistics Overview
+      <button
+        className="w-full p-2 text-start"
+        onClick={() => navigate("stats")}
+      >
+        &lt; Back To Statistics Overview
       </button>
       <hr />
       <div ref={parentRef} className="flex-grow overflow-y-scroll">
