@@ -100,7 +100,6 @@ function App() {
           <span className="btm-nav-label">Entries</span>
         </button>
         <button
-          disabled={!devmode}
           className={activePage.startsWith("stats") ? "active" : ""}
           onClick={() => changePage("stats")}
         >
