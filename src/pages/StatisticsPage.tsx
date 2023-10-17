@@ -1,36 +1,14 @@
 import { Chart, ChartProps } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  LineController,
-  LineElement,
-  PointElement,
-  LinearScale,
   Title,
   CategoryScale,
   TimeScale,
   Tooltip,
-  Filler,
-  BarController,
-  BarElement,
-  Legend,
 } from "chart.js";
 import "chartjs-adapter-luxon";
 
-ChartJS.register(
-  BarController,
-  BarElement,
-
-  // LineController,
-  // LineElement,
-  // PointElement,
-  LinearScale,
-  Title,
-  CategoryScale,
-  TimeScale,
-  Tooltip,
-  // Filler,
-  Legend
-);
+ChartJS.register(Title, CategoryScale, TimeScale, Tooltip);
 
 import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
 
@@ -45,19 +23,20 @@ import {
 } from "../entryMaths";
 import { NavigationContext } from "../App";
 import { WeekView } from "../components/StatsWeekView";
+import { QuickStats } from "../components/TrackPageStats";
 
 export function StatisticsPage() {
-  // const weekview =
-
   const currentYear = DateTime.now().year;
   const currentWeek = DateTime.now().weekNumber;
   const { navigate } = useContext(NavigationContext);
 
   return (
-    <div>
+    <div className="flex flex-col">
       <h1 className="p-1 text-center text-lg font-medium">Stats</h1>
       <hr />
-      <ActivityMap />
+      <div className="self-center">
+        <QuickStats />
+      </div>
       <hr />
       <WeekView year={currentYear} week_number={currentWeek} />
       <WeekView year={currentYear} week_number={currentWeek - 1} />
@@ -71,6 +50,8 @@ export function StatisticsPage() {
         </button>
         <hr />
       </div>
+      <div className="divider">Current Year</div>
+      <ActivityMap />
     </div>
   );
 }
@@ -204,7 +185,6 @@ function ActivityMap() {
       responsive: true,
       aspectRatio: 5,
       plugins: {
-        legend: undefined,
         tooltip: {
           displayColors: false,
           callbacks: {
