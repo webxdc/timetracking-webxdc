@@ -103,6 +103,8 @@ export function MorePage() {
     }
   };
 
+  const devModeActive = localStorage.getItem("devmode") === "true" || false;
+
   return (
     <div className="p-5">
       <h1 className="text-xl">About</h1>
@@ -163,24 +165,28 @@ export function MorePage() {
           </span>
         </label>
       </div>
-      <button
-        className="basic-btn"
-        onClick={exportData.bind(null, "BotFormat")}
-      >
-        Export (simon's bot format)
-      </button>
+      {devModeActive && (
+        <button
+          className="basic-btn"
+          onClick={exportData.bind(null, "BotFormat")}
+        >
+          Export (simon's bot format)
+        </button>
+      )}
       <button
         className="basic-btn"
         onClick={exportData.bind(null, "AppFormat")}
       >
         Export (timetracking xdc format)
       </button>
-      <button
-        className="basic-btn"
-        onClick={importFiles.bind(null, "BotFormat")}
-      >
-        Import (simon's bot format)
-      </button>
+      {devModeActive && (
+        <button
+          className="basic-btn"
+          onClick={importFiles.bind(null, "BotFormat")}
+        >
+          Import (simon's bot format)
+        </button>
+      )}
       <button
         className="basic-btn"
         onClick={importFiles.bind(null, "AppFormat")}

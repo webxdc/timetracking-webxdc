@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Add Stats for time on days in week
+- Introducing the Statistics tab
+- make "simons bot format" an devmode option (hidden by default)
 
 ## 0.4.0
 
