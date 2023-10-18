@@ -15,6 +15,7 @@ export function BackupPage() {
   const devModeActive = localStorage.getItem("devmode") === "true" || false;
 
   const monthsWithEntries = useStore((s) => s.monthsWithEntries);
+  const exportDisabled = useStore((s) => s.entries.length === 0);
 
   const importFiles = async (format: "BotFormat" | "AppFormat") => {
     let files = await window.webxdc.importFiles({
@@ -104,11 +105,27 @@ export function BackupPage() {
             This is useful when you want to update to a new version or just a
             new instance of this xdc app that was posted in another chat.
           </p>
-          <h1 className="text-xl">Import / Export</h1>
           <p>
-            The export does not include action history, it just includes the
-            task entries. Deleted entries are also not exported.
+            Importing-from and exporting-to other apps could also be available
+            here in the future.
           </p>
+          <h1 className="py-1 text-xl">Import</h1>
+          <button
+            className="basic-btn"
+            onClick={importFiles.bind(null, "AppFormat")}
+          >
+            Import Backup
+          </button>
+          {devModeActive && (
+            <button
+              className="basic-btn"
+              onClick={importFiles.bind(null, "BotFormat")}
+            >
+              Import from simon's bot format
+            </button>
+          )}
+          <h1 className="py-1 text-xl">Export</h1>
+
           <div className="form-control w-full max-w-xs">
             <label className="label">
               <span className="label-text">
@@ -122,44 +139,47 @@ export function BackupPage() {
                 </option>
               ))}
             </select>
+
             <label className="label">
-              <span className="label-text">
-                (restart app if your month is not shown, for now it is not
-                always updated on all actions. is is cached for performance but
-                not always updated yet)
+              <span className="label-text-alt"></span>
+              <span
+                className="label-text-alt underline"
+                onClick={explainWhyMyMonthIsNotShown}
+              >
+                why is my month not shown?
               </span>
             </label>
           </div>
+          <button
+            className="basic-btn"
+            onClick={exportData.bind(null, "AppFormat")}
+            disabled={exportDisabled}
+          >
+            Export Backup
+          </button>
           {devModeActive && (
             <button
               className="basic-btn"
               onClick={exportData.bind(null, "BotFormat")}
+              disabled={exportDisabled}
             >
-              Export (simon's bot format)
+              Export to simon's bot format
             </button>
           )}
-          <button
-            className="basic-btn"
-            onClick={exportData.bind(null, "AppFormat")}
-          >
-            Export (timetracking xdc format)
-          </button>
-          {devModeActive && (
-            <button
-              className="basic-btn"
-              onClick={importFiles.bind(null, "BotFormat")}
-            >
-              Import (simon's bot format)
-            </button>
+          {exportDisabled && (
+            <p>Export is disabled because there are no entries</p>
           )}
-          <button
-            className="basic-btn"
-            onClick={importFiles.bind(null, "AppFormat")}
-          >
-            Import (timetracking xdc format)
-          </button>
+          <p>
+            The export does not include action history, it just includes the
+            task entries. Deleted entries are also not exported.
+          </p>
         </div>
       </div>
     </div>
   );
+}
+
+function explainWhyMyMonthIsNotShown() {
+  alert(`Restart the app if your month is not shown,
+If that does not help check in the entries tab if there are any entries in the moth you want to export.`);
 }
