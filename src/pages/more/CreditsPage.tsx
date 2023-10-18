@@ -6,7 +6,7 @@ export function CreditsPage() {
   const { navigate } = useContext(NavigationContext);
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <button
         className="w-full p-2 text-start"
         onClick={() => navigate("more")}
@@ -14,28 +14,28 @@ export function CreditsPage() {
         &lt; Back To More
       </button>
       <hr />
-
-      <h1 className="px-2 py-1 text-2xl">Credits</h1>
-
-      <div className="px-2">
-        <p>This webxdc app was made by:</p>
-        <ul className="mx-2 list-inside">
-          <li className="list-disc font-bold">Simon Laux</li>
-          <li className="list-disc font-thin">
-            and maybe You? If you want to see your name here, please contribute
-            on github
-          </li>
-        </ul>
-        <h1 className="text-xl">
-          This project makes use of the following dependencies
-        </h1>
-        <p>
-          This project makes use of the following packages, thanks to all
-          projects that we used:
-        </p>
-        <Suspense fallback={<>Loading</>}>
-          <Licenses />
-        </Suspense>
+      <div className="overflow-y-scroll">
+        <h1 className="px-2 py-1 text-2xl">Credits</h1>
+        <div className="px-2">
+          <p>This webxdc app was made by:</p>
+          <ul className="mx-2 list-inside">
+            <li className="list-disc font-bold">Simon Laux</li>
+            <li className="list-disc font-thin">
+              and maybe You? If you want to see your name here, please
+              contribute on github
+            </li>
+          </ul>
+          <h1 className="text-xl">
+            This project makes use of the following dependencies
+          </h1>
+          <p>
+            This project makes use of the following packages, thanks to all
+            projects that we used:
+          </p>
+          <Suspense fallback={<>Loading</>}>
+            <Licenses />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
