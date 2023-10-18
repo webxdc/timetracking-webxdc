@@ -19,6 +19,7 @@ import { StatisticsPage } from "./pages/StatisticsPage";
 import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
 import { DaysInMonthsPage } from "./pages/stats/DaysInMonthsPage";
 import { CreditsPage } from "./pages/more/CreditsPage";
+import { BackupPage } from "./pages/more/BackupPage";
 
 const initializeStore = wrapPromise(init());
 
@@ -29,6 +30,7 @@ type AppPageName =
   | "stats/weeks"
   | "stats/months"
   | "more"
+  | "more/backup"
   | "more/credits"
   | "debug";
 
@@ -67,6 +69,9 @@ function App() {
       break;
     case "more":
       Page = MorePage;
+      break;
+    case "more/backup":
+      Page = BackupPage;
       break;
     case "more/credits":
       Page = CreditsPage;

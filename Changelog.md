@@ -7,6 +7,7 @@
 - make "simons bot format" an devmode option (hidden by default)
 - move licenses to own credits page
 - move devmode to credits page
+- move import/export to new backup page
 
 ## 0.4.0
 
