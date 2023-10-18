@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { NavigationContext } from "../App";
 import { getEntriesInTimeframeCutToIt } from "../entryMaths";
 import {
   export_own_format,
@@ -8,9 +9,9 @@ import {
   import_own_format,
 } from "../imex";
 import { importEntries, useStore } from "../store";
-import { wrapPromise } from "../util";
 
 export function MorePage() {
+  const { navigate } = useContext(NavigationContext);
   const monthsWithEntries = useStore((s) => s.monthsWithEntries);
   const devmode = () => {
     const devmode = localStorage.getItem("devmode") === "true" || false;
@@ -193,34 +194,16 @@ export function MorePage() {
       >
         Import (timetracking xdc format)
       </button>
-
-      <h1 className="text-xl">
-        This project makes use of the following dependencies
-      </h1>
-      <p>
-        This project makes use of the following packages, thanks to all projects
-        that we used:
-      </p>
-      <Suspense fallback={<>Loading</>}>
-        <Licenses />
-      </Suspense>
+      <div className="m-1">
+        <hr />
+        <button
+          className="w-full p-2 text-start"
+          onClick={() => navigate("more/credits")}
+        >
+          Credits &gt;
+        </button>
+        <hr />
+      </div>
     </div>
-  );
-}
-
-const LicenseTXT = wrapPromise(
-  fetch("./DependencyLicenses.txt").then((r) => r.text())
-);
-
-function Licenses() {
-  const licenseTxt = LicenseTXT.read();
-
-  return (
-    <code
-      className="mt-2 block overflow-x-hidden overflow-y-scroll rounded border-2 border-solid border-slate-300 p-2"
-      style={{ maxHeight: "50vh", whiteSpace: "pre-line" }}
-    >
-      {licenseTxt}
-    </code>
   );
 }

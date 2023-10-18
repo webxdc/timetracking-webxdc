@@ -18,6 +18,7 @@ import { EntryPage } from "./pages/EntryPage";
 import { StatisticsPage } from "./pages/StatisticsPage";
 import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
 import { DaysInMonthsPage } from "./pages/stats/DaysInMonthsPage";
+import { CreditsPage } from "./pages/more/CreditsPage";
 
 const initializeStore = wrapPromise(init());
 
@@ -28,6 +29,7 @@ type AppPageName =
   | "stats/weeks"
   | "stats/months"
   | "more"
+  | "more/credits"
   | "debug";
 
 export const NavigationContext = createContext({
@@ -65,6 +67,9 @@ function App() {
       break;
     case "more":
       Page = MorePage;
+      break;
+    case "more/credits":
+      Page = CreditsPage;
       break;
     case "debug":
       Page = DebugPage;
