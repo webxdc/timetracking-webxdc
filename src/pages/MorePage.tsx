@@ -13,11 +13,6 @@ import { importEntries, useStore } from "../store";
 export function MorePage() {
   const { navigate } = useContext(NavigationContext);
   const monthsWithEntries = useStore((s) => s.monthsWithEntries);
-  const devmode = () => {
-    const devmode = localStorage.getItem("devmode") === "true" || false;
-    localStorage.setItem("devmode", String(!devmode));
-    location.reload();
-  };
 
   const [auto_complete, internal_set_autocomplete] = useState(
     localStorage.getItem("autocomplete_enabled") === "true"
@@ -121,9 +116,6 @@ export function MorePage() {
         It's timetracking on multiple devices, but without the need for a cloud.
       </p>
       <h1 className="text-xl">Options</h1>
-      <button className="basic-btn" onClick={devmode}>
-        Toggle Devmode (reloads app)
-      </button>
       <label className="label cursor-pointer">
         <span className="label-text">
           Auto complete task labels (experimental)
