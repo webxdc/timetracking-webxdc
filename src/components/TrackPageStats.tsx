@@ -91,7 +91,7 @@ export function QuickStats() {
   }, [entries]); // update when entries change
 
   return (
-    <div className="stats shadow">
+    <div className="stats shadow" style={{ minHeight: 110 }}>
       {stats && (
         <>
           <div className="stat">
