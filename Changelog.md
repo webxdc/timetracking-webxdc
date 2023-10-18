@@ -6,6 +6,7 @@
 - Introducing the Statistics tab
 - make "simons bot format" an devmode option (hidden by default)
 - move licenses to own credits page
+- move devmode to credits page
 
 ## 0.4.0
 

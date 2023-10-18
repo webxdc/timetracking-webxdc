@@ -4,6 +4,11 @@ import { wrapPromise } from "../../util";
 
 export function CreditsPage() {
   const { navigate } = useContext(NavigationContext);
+  const devmode = () => {
+    const devmode = localStorage.getItem("devmode") === "true" || false;
+    localStorage.setItem("devmode", String(!devmode));
+    location.reload();
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -35,6 +40,14 @@ export function CreditsPage() {
           <Suspense fallback={<>Loading</>}>
             <Licenses />
           </Suspense>
+          <h1 className="text-xl">Developer Mode</h1>
+          <p>
+            If you are a developer and want to debug this app or enable highly
+            experimental features you can enable the special developer mode.
+          </p>
+          <button className="basic-btn" onClick={devmode}>
+            Toggle Devmode (reloads app)
+          </button>
         </div>
       </div>
     </div>
