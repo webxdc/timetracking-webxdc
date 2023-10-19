@@ -25,6 +25,7 @@ import { NavigationContext } from "../App";
 import { WeekView } from "../components/StatsWeekView";
 import { QuickStats } from "../components/TrackPageStats";
 import { MonthView } from "../components/StatsMonthViewDays";
+import { TaskDistributionPie } from "../components/StatsTaskDistribution";
 
 export function StatisticsPage() {
   const now = DateTime.now();
@@ -110,6 +111,9 @@ export function StatisticsPage() {
       </div>
       <div className="divider">Current Year</div>
       <ActivityMap />
+      <div className="divider">Time spend by Task</div>
+      in total (todo possibility to change timeframe)
+      <TaskDistributionPie />
     </div>
   );
 }
