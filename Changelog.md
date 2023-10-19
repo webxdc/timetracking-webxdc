@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix typo in "why is my month missing" dialog
+- fix weird sidewards overscrolling bug in statistics/weekPage
 
 ## 0.5.0
 

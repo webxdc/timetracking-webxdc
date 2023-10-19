@@ -70,6 +70,8 @@ export function DaysInMonthsPage() {
             height: `${rowVirtualizer.getTotalSize()}px`,
             width: "100%",
             position: "relative",
+            overscrollBehaviorX: "none",
+            overflowX: "hidden",
           }}
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => (
