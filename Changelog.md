@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix typo in "why is my month missing" dialog
+
 ## 0.5.0
 
 - add Stats for time on days in week/month

@@ -184,7 +184,7 @@ export function BackupPage() {
           onClose={() => setWhyIsMyMonthMissingShown(false)}
           title={"Why is my month not shown?"}
           message={`Restart the app if your month is not shown,
-If that does not help check in the entries tab if there are any entries in the moth you want to export.`}
+If that does not help check in the entries tab if there are any entries in the month you want to export.`}
         />
       )}
     </div>
