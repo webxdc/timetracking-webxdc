@@ -9,6 +9,9 @@
 - move devmode to credits page
 - move import/export to new backup page
 - improve backup page
+- move about and options to dedicated pages
+- improve about page
+- show version on more page
 
 ## 0.4.0
 
