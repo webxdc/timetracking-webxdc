@@ -1,12 +1,14 @@
 import { DateTime, Duration } from "luxon";
 import { useStore } from "../store";
 
-export function TaskDistributionPie() {
-  const timeRange: [start: number, end: number] = [
-    0,
-    DateTime.now().toMillis(),
-  ];
-
+export function TaskDistributionPie({
+  timeRange,
+  threshold,
+}: {
+  timeRange: [start: number, end: number];
+  /** whats the minimum percentage a task need to be included in the list  */
+  threshold?: number;
+}) {
   const time_spent_by_label = useStore
     .getState()
     .getTimeSpendByLabel(...timeRange);
@@ -21,12 +23,14 @@ export function TaskDistributionPie() {
     timeSpend: Duration;
     percentage: number;
   }[] = [];
-  const threshold = 0.01;
+  /** how many entries get incuded until they are grouped into "Other" */
+  const maxEntries = 9;
+  const realThreshold = threshold || 0.01;
   let time_for_other_label = 0;
   for (const label of time_spent_by_label) {
     const timeSpend = label.timeSpend.toMillis();
     const percentage = timeSpend / time_spent_total;
-    if (percentage <= threshold) {
+    if (percentage <= realThreshold) {
       time_for_other_label += timeSpend;
     } else {
       rawLabels.push({
@@ -35,9 +39,9 @@ export function TaskDistributionPie() {
       });
     }
   }
+
   rawLabels.sort((a, b) => b.percentage - a.percentage);
 
-  let cursor = 0;
   const labelsSortedWithPercentage: {
     label: string;
     timeSpend: Duration;
@@ -46,12 +50,19 @@ export function TaskDistributionPie() {
     end: number;
   }[] = [];
 
+  let cursor = 0;
+  let i = 0;
   for (const label of rawLabels) {
+    if (i >= maxEntries) {
+      time_for_other_label += label.timeSpend.toMillis();
+      continue;
+    }
     labelsSortedWithPercentage.push({
       ...label,
       start: cursor,
       end: (cursor = cursor + label.percentage),
     });
+    i++;
   }
 
   if (time_for_other_label !== 0) {

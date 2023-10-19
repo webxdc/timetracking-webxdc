@@ -46,6 +46,36 @@ export function StatisticsPage() {
     { label: "Month", value: "month" },
   ];
 
+  type TimeRange = [start: number, end: number];
+  const [pieTimeRangeIndex, setPieTimeRangeIndex] = useState<number>(0);
+  const pieTimeRangeOptions: {
+    label: string;
+    value: TimeRange;
+    threshold?: number;
+  }[] = [
+    {
+      label: "Current Week",
+      value: [now.startOf("week").toMillis(), now.toMillis()],
+      threshold: 0.01,
+    },
+    {
+      label: "Last Week",
+      value: [
+        now.startOf("week").minus({ week: 1 }).toMillis(),
+        now.startOf("week").toMillis(),
+      ],
+    },
+    {
+      label: "This Month",
+      value: [now.startOf("month").toMillis(), now.toMillis()],
+    },
+    {
+      label: "This Year",
+      value: [now.startOf("year").toMillis(), now.toMillis()],
+    },
+    { label: "Everything", value: [0, now.toMillis()] },
+  ];
+
   return (
     <div className="flex flex-col">
       <h1 className="p-1 text-center text-lg font-medium">Stats</h1>
@@ -112,8 +142,38 @@ export function StatisticsPage() {
       <div className="divider">Current Year</div>
       <ActivityMap />
       <div className="divider">Time spend by Task</div>
-      in total (todo possibility to change timeframe)
-      <TaskDistributionPie />
+
+      <div className="my-2 flex w-full justify-center">
+        <div className="latest-tasks-timerange flex">
+          {pieTimeRangeOptions.map((mode, index, array) => {
+            let border =
+              array.length - 1 === index
+                ? "rounded-r-lg border-l-0"
+                : index === 0
+                ? "rounded-l-lg border-r-0"
+                : "border-x-0";
+
+            let active =
+              pieTimeRangeIndex === index
+                ? "bg-slate-600 hover:bg-slate-600 text-white"
+                : "";
+
+            return (
+              <button
+                key={index}
+                onClick={() => setPieTimeRangeIndex(index)}
+                className={`pv-2 border-collapse border-2 border-solid border-slate-300 px-2 py-1 font-medium hover:bg-slate-500 hover:text-white ${border} ${active}`}
+              >
+                {mode.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <TaskDistributionPie
+        timeRange={pieTimeRangeOptions[pieTimeRangeIndex].value}
+        threshold={pieTimeRangeOptions[pieTimeRangeIndex].threshold}
+      />
     </div>
   );
 }
