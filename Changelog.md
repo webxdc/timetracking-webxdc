@@ -4,6 +4,7 @@
 
 - fix typo in "why is my month missing" dialog
 - fix weird sidewards overscrolling bug in statistics/weekPage
+- add "Time spend by task" to Statistics
 
 ## 0.5.0
 
