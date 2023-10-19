@@ -1984,10 +1984,10 @@ vite@^4.1.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
-webxdc-types@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/webxdc-types/-/webxdc-types-1.0.0.tgz#5c841bcf29d634189add1a2f78cae563e4af2330"
-  integrity sha512-VKccEMorc0gPT/XQNqry69F7NeJm8FaVMVuTfImY3vjtaCJmx0BgNdNzFC3nC5bA9PpURcjmGnJD8frFHV+3Yg==
+webxdc-types@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/webxdc-types/-/webxdc-types-1.0.1.tgz#8297c0282192ffc34b02355074e92cede37dc08f"
+  integrity sha512-voocssWnUiMoJoicPWmCKnjd6OG8TNuUq+5n9+0gMSBMg0h1KxapnN9Vq6WssK0jhKcGBSZvcQf8tGK+X88IaQ==
 
 well-known-symbols@^2.0.0:
   version "2.0.0"

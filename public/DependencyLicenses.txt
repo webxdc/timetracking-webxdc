@@ -955,6 +955,6 @@
 │     ├─ VendorName: Paul Henschel
 │     └─ VendorUrl: https://github.com/pmndrs/zustand
 └─ unlicense
-   └─ webxdc-types@1.0.0
+   └─ webxdc-types@1.0.1
       ├─ URL: https://github.com/webxdc/webxdc-types#readme
       └─ VendorUrl: https://github.com/webxdc/webxdc-types#readme
