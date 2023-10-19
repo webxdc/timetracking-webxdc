@@ -30,8 +30,10 @@ export function AboutPage() {
           </p>
           <h2 className="pb-1 pt-2 text-lg">Why use it?</h2>
           <ul className="mx-2 list-inside">
-            {USPs.map((usp) => (
-              <li className="list-disc">{usp}</li>
+            {USPs.map((usp, index) => (
+              <li className="list-disc" key={index}>
+                {usp}
+              </li>
             ))}
           </ul>
           <h2 className="pb-1 pt-2 text-lg">How can I use it?</h2>
