@@ -1623,6 +1623,11 @@ react-chartjs-2@^5.2.0:
   resolved "https://registry.npmjs.org/react-chartjs-2/-/react-chartjs-2-5.2.0.tgz"
   integrity sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA==
 
+react-contribution-calendar@^1.3.5:
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/react-contribution-calendar/-/react-contribution-calendar-1.3.5.tgz#e6f45069d422ca014cef970ac652ee0191a5c998"
+  integrity sha512-aSsjEuLV9hxDcZoIOEnacTkBHUzGihbIJ5Sd4JvwUCqzlF1sr+dc7lDy0ZX5+jThW89DLKFtWIpxCB6HeBXOcw==
+
 react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
