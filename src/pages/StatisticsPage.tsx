@@ -54,7 +54,7 @@ export function StatisticsPage() {
     threshold?: number;
   }[] = [
     {
-      label: "Current Week",
+      label: "This Week",
       value: [now.startOf("week").toMillis(), now.toMillis()],
       threshold: 0.01,
     },
@@ -73,7 +73,7 @@ export function StatisticsPage() {
       label: "This Year",
       value: [now.startOf("year").toMillis(), now.toMillis()],
     },
-    { label: "Everything", value: [0, now.toMillis()] },
+    // { label: "Everything", value: [0, now.toMillis()] },
   ];
 
   return (
