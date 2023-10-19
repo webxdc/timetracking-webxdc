@@ -767,7 +767,7 @@
 │  │  └─ VendorUrl: https://postcss.org/
 │  ├─ prettier-plugin-tailwindcss@0.2.7
 │  │  └─ URL: https://github.com/tailwindlabs/prettier-plugin-tailwindcss
-│  ├─ prettier@2.8.7
+│  ├─ prettier@3.0.3
 │  │  ├─ URL: https://github.com/prettier/prettier.git
 │  │  ├─ VendorName: James Long
 │  │  └─ VendorUrl: https://prettier.io/
