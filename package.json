@@ -1,7 +1,7 @@
 {
   "name": "timetracking-webxdc",
   "private": true,
-  "version": "0.4.2-pre",
+  "version": "0.5.0",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "scripts": {
