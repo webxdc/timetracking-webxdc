@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
 import { useContext, useEffect, useRef, useState } from "react";
-import { NavigationContext } from "../../App";
 import { importEntries, useStore } from "../../store";
 import { getEntriesInTimeframeCutToIt } from "../../entryMaths";
 import {
@@ -10,9 +9,10 @@ import {
   import_own_format,
 } from "../../imex";
 import { Dialog } from "@headlessui/react";
+import { useNavigate } from "react-router-dom";
 
 export function BackupPage() {
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
   const devModeActive = localStorage.getItem("devmode") === "true" || false;
 
   const monthsWithEntries = useStore((s) => s.monthsWithEntries);
@@ -58,7 +58,7 @@ export function BackupPage() {
 
         return {
           label: `${month.monthLong} ${month.year} (${start.toLocaleString(
-            DateTime.DATE_SHORT
+            DateTime.DATE_SHORT,
           )} - ${end.toLocaleString(DateTime.DATE_SHORT)})`,
           range: `${start.toMillis()}:${end.toMillis()}`,
         };
@@ -92,11 +92,8 @@ export function BackupPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <button
-        className="w-full p-2 text-start"
-        onClick={() => navigate("more")}
-      >
-        &lt; Back To More
+      <button className="w-full p-2 text-start" onClick={() => navigate(-1)}>
+        &lt; Back
       </button>
       <hr />
       <div className="overflow-y-scroll">

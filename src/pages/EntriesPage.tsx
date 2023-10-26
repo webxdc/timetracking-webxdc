@@ -12,16 +12,14 @@ import { useEffect, useRef, useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { useStore, TaskEntry, markEntryAsDeleted, endEntry } from "../store";
+import { useNavigate } from "react-router-dom";
 
-export function EntriesPage({
-  selectEntry,
-}: {
-  selectEntry: (id: TaskEntry["id"]) => void;
-}) {
+export function EntriesPage() {
+  const navigate = useNavigate();
   const raw_entries = useStore((store) => store.entries);
   const [showDeleted, setShowDeleted] = useState(false);
   const [showBreaks, setShowBreaks] = useState(
-    localStorage.getItem("showBreaks") !== "false"
+    localStorage.getItem("showBreaks") !== "false",
   );
 
   const toggleShowBreaks = () => {
@@ -111,7 +109,7 @@ export function EntriesPage({
             >
               <Entry
                 entry={entries[virtualRow.index]}
-                onEdit={(id: TaskEntry["id"]) => selectEntry(id)}
+                onEdit={(id: TaskEntry["id"]) => navigate(`/entries/${id}`)}
               />
             </div>
           ))}
@@ -131,7 +129,7 @@ function Entry({
   const [showDeleteConfirmation, setShowDeleteConfirm] = useState(false);
 
   const startTime = DateTime.fromMillis(entry.start).toLocaleString(
-    DateTime.DATETIME_MED_WITH_WEEKDAY
+    DateTime.DATETIME_MED_WITH_WEEKDAY,
   );
 
   let duration =
@@ -232,14 +230,14 @@ function Entry({
                         <div>
                           Start:{" "}
                           {DateTime.fromMillis(entry.start).toLocaleString(
-                            DateTime.DATETIME_MED
+                            DateTime.DATETIME_MED,
                           )}
                         </div>
                         <div>
                           End:{" "}
                           {entry.end &&
                             DateTime.fromMillis(entry.end).toLocaleString(
-                              DateTime.DATETIME_MED
+                              DateTime.DATETIME_MED,
                             )}
                         </div>
                         <div>Duration: {duration}</div>

@@ -210,6 +210,9 @@
 │  │  └─ URL: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat
 │  ├─ @nodelib/fs.walk@1.2.8
 │  │  └─ URL: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk
+│  ├─ @remix-run/router@1.10.0
+│  │  ├─ URL: https://github.com/remix-run/react-router
+│  │  └─ VendorName: Remix Software
 │  ├─ @tailwindcss/forms@0.5.3
 │  │  └─ URL: https://github.com/tailwindlabs/tailwindcss-forms
 │  ├─ @tanstack/react-virtual@3.0.0-beta.54
@@ -796,6 +799,12 @@
 │  ├─ react-hook-form@7.45.0
 │  │  ├─ URL: https://github.com/react-hook-form/react-hook-form
 │  │  └─ VendorUrl: https://www.react-hook-form.com/
+│  ├─ react-router-dom@6.17.0
+│  │  ├─ URL: https://github.com/remix-run/react-router
+│  │  └─ VendorName: Remix Software
+│  ├─ react-router@6.17.0
+│  │  ├─ URL: https://github.com/remix-run/react-router
+│  │  └─ VendorName: Remix Software
 │  ├─ react@18.2.0
 │  │  ├─ URL: https://github.com/facebook/react.git
 │  │  └─ VendorUrl: https://reactjs.org/

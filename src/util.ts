@@ -12,7 +12,7 @@ export function wrapPromise<T>(promise: Promise<T>) {
     (err) => {
       status = "error";
       response = err;
-    }
+    },
   );
   const read = () => {
     switch (status) {

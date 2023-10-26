@@ -1,9 +1,7 @@
-import { Suspense, useContext } from "react";
-import { NavigationContext } from "../../App";
-import { wrapPromise } from "../../util";
+import { useNavigate } from "react-router-dom";
 
 export function AboutPage() {
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
 
   const USPs = [
     "It's timetracking on multiple devices, but without the need for a cloud.",
@@ -14,11 +12,8 @@ export function AboutPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <button
-        className="w-full p-2 text-start"
-        onClick={() => navigate("more")}
-      >
-        &lt; Back To More
+      <button className="w-full p-2 text-start" onClick={() => navigate(-1)}>
+        &lt; Back
       </button>
       <hr />
       <div className="overflow-y-scroll">

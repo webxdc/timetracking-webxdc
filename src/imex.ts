@@ -42,7 +42,7 @@ namespace simons_bot_format {
 
   export function parseStartDate(
     day: SimonsBotFormatEntry["day"],
-    start: string
+    start: string,
   ) {
     const date: DateTime = parseDay(day);
     const { hour, minute, weekday } = parse_time(start);
@@ -74,7 +74,7 @@ namespace simons_bot_format {
   export function parseEndDate(day: SimonsBotFormatEntry["day"], end: string) {
     if (end === "?") {
       throw new Error(
-        "please check if it is '?' before passing to this function"
+        "please check if it is '?' before passing to this function",
       );
     }
     let date: DateTime = parseDay(day);
@@ -87,7 +87,7 @@ namespace simons_bot_format {
         {
           weekday,
           expected_weekday,
-        }
+        },
       );
       date = date.set({ weekday: weekdayShortToNumber(weekday) });
     }
@@ -120,7 +120,7 @@ export function import_from_simons_bot_format(data: SimonsBotFormatEntry[]) {
     })
   ) {
     throw new Error(
-      "Data has wrong format: fields are missing or have wrong format"
+      "Data has wrong format: fields are missing or have wrong format",
     );
   }
 
@@ -148,7 +148,7 @@ export function import_from_simons_bot_format(data: SimonsBotFormatEntry[]) {
         console.log(
           "import: skipped entry with negative duration: ",
           entry.duration,
-          entry
+          entry,
         );
         continue;
       } else if (entry.duration === 0) {
@@ -172,7 +172,7 @@ export function export_to_simons_bot_format(data: TaskEntry[]) {
     .sort((a, b) => a.start - b.start);
   const firstDate = DateTime.fromMillis(sorted[0].start).toFormat("dd.LLL.yy");
   const endDate = DateTime.fromMillis(sorted[sorted.length - 1].start).toFormat(
-    "dd.LLL.yy"
+    "dd.LLL.yy",
   );
   const filename = `${firstDate}-${endDate}`;
   const content: SimonsBotFormatEntry[] = sorted.map((entry) => {
@@ -228,7 +228,7 @@ export function export_own_format(content: TaskEntryVersion1[]) {
     .sort((a, b) => a.start - b.start);
   const firstDate = DateTime.fromMillis(sorted[0].start).toFormat("dd.LLL.yy");
   const endDate = DateTime.fromMillis(sorted[sorted.length - 1].start).toFormat(
-    "dd.LLL.yy"
+    "dd.LLL.yy",
   );
   const filename = `${firstDate}-${endDate}`;
   const plainText = JSON.stringify({
@@ -247,7 +247,7 @@ export function import_own_format(rawdata: ExportFormat) {
     throw new Error("unknown format");
   } else if (rawdata.format_version > 1) {
     throw new Error(
-      `format_version ${rawdata.format_version} is not supported yet, please try to get a newer version of this xdc`
+      `format_version ${rawdata.format_version} is not supported yet, please try to get a newer version of this xdc`,
     );
   }
   // (if it is higher than supported versions alert the user)

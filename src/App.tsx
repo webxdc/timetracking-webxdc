@@ -1,4 +1,9 @@
-import { createContext, useState } from "react";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from "react-router-dom";
 
 import "./App.css";
 import {
@@ -8,91 +13,21 @@ import {
   QueueListIcon,
   Squares2X2Icon,
 } from "@heroicons/react/24/outline";
-import { TrackPage } from "./pages/TrackPage";
-import { EntriesPage } from "./pages/EntriesPage";
-import { MorePage } from "./pages/MorePage";
 import { wrapPromise } from "./util";
-import { init, TaskEntry } from "./store";
-import { DebugPage } from "./pages/DebugPage";
-import { EntryPage } from "./pages/EntryPage";
-import { StatisticsPage } from "./pages/StatisticsPage";
-import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
-import { DaysInMonthsPage } from "./pages/stats/DaysInMonthsPage";
-import { CreditsPage } from "./pages/more/CreditsPage";
-import { BackupPage } from "./pages/more/BackupPage";
-import { AboutPage } from "./pages/more/AboutPage";
-import { OptionsPage } from "./pages/more/OptionsPage";
+import { init } from "./store";
 
 const initializeStore = wrapPromise(init());
 
-type AppPageName =
-  | "track"
-  | "entries"
-  | "stats"
-  | "stats/weeks"
-  | "stats/months"
-  | "more"
-  | "more/about"
-  | "more/options"
-  | "more/backup"
-  | "more/credits"
-  | "debug";
-
-export const NavigationContext = createContext({
-  navigate: (destination: AppPageName) => {},
-});
-
 function App() {
   initializeStore.read();
-  const [activePage, changePage] = useState<AppPageName>("track");
-
   const devmode = localStorage.getItem("devmode") === "true" || false;
 
-  let Page;
-  const [selectedEntry, selectEntry] = useState<TaskEntry["id"] | null>(null);
+  const navigate = useNavigate();
+  let location = useLocation();
 
-  switch (activePage) {
-    case "track":
-      Page = TrackPage;
-      break;
-    case "entries":
-      if (selectedEntry) {
-        Page = () => <EntryPage id={selectedEntry} selectEntry={selectEntry} />;
-      } else {
-        Page = () => <EntriesPage selectEntry={selectEntry} />;
-      }
-      break;
-    case "stats":
-      Page = StatisticsPage;
-      break;
-    case "stats/weeks":
-      Page = DaysInWeeksPage;
-      break;
-    case "stats/months":
-      Page = DaysInMonthsPage;
-      break;
-    case "more":
-      Page = MorePage;
-      break;
-    case "more/about":
-      Page = AboutPage;
-      break;
-    case "more/options":
-      Page = OptionsPage;
-      break;
-    case "more/backup":
-      Page = BackupPage;
-      break;
-    case "more/credits":
-      Page = CreditsPage;
-      break;
-    case "debug":
-      Page = DebugPage;
-      break;
-    default:
-      Page = () => <>no page selected</>;
-      break;
-  }
+  const isActive = (page: string) => {
+    return location.pathname.startsWith("/" + page) ? "active" : undefined;
+  };
 
   return (
     <div className="flex h-full flex-col" style={{ maxHeight: "100vh" }}>
@@ -100,48 +35,40 @@ function App() {
         className="relative flex-grow overflow-auto"
         style={{ maxHeight: "calc(100vh - 4rem)" }}
       >
-        <NavigationContext.Provider value={{ navigate: changePage }}>
-          <Page />
-        </NavigationContext.Provider>
+        <Outlet />
       </div>
       <div className="btm-nav" style={{ position: "relative" }}>
         <button
-          className={activePage === "track" ? "active" : ""}
-          onClick={() => changePage("track")}
+          className={location.pathname === "/" ? "active" : undefined}
+          onClick={() => navigate("/")}
         >
           <ClockIcon className="h-5 w-5" />
           <span className="btm-nav-label">Track</span>
         </button>
         <button
-          className={activePage === "entries" ? "active" : ""}
+          className={isActive("entries")}
           onClick={() => {
-            if (activePage === "entries") {
-              selectEntry(null);
-            }
-            changePage("entries");
+            navigate("/entries");
           }}
         >
           <QueueListIcon className="h-5 w-5" />
           <span className="btm-nav-label">Entries</span>
         </button>
         <button
-          className={activePage.startsWith("stats") ? "active" : ""}
-          onClick={() => changePage("stats")}
+          className={isActive("stats")}
+          onClick={() => navigate("/stats")}
         >
           <ChartPieIcon className="h-5 w-5" />
           <span className="btm-nav-label">Statistics</span>
         </button>
-        <button
-          className={activePage === "more" ? "active" : ""}
-          onClick={() => changePage("more")}
-        >
+        <button className={isActive("more")} onClick={() => navigate("/more")}>
           <Squares2X2Icon className="h-5 w-5" />
           <span className="btm-nav-label">More</span>
         </button>
         {devmode && (
           <button
-            className={activePage === "debug" ? "active" : ""}
-            onClick={() => changePage("debug")}
+            className={isActive("debug")}
+            onClick={() => navigate("/debug")}
           >
             <BugAntIcon className="h-5 w-5" />
             <span className="btm-nav-label">Debug</span>

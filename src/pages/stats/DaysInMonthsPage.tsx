@@ -1,7 +1,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { DateTime } from "luxon";
 import { useContext, useMemo, useRef } from "react";
-import { NavigationContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 import {
   minMonthViewHeight,
   MonthView,
@@ -15,7 +15,7 @@ const maxMonths = 1200;
 export function DaysInMonthsPage() {
   // get oldest entry
   const oldest_entry_start = useStore((store) =>
-    arrayMin(store.getTrackedEntries().map((t) => t.start))
+    arrayMin(store.getTrackedEntries().map((t) => t.start)),
   );
 
   const { months } = useMemo(() => {
@@ -53,15 +53,12 @@ export function DaysInMonthsPage() {
     getItemKey: (index) => months[index].key,
   });
 
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-full flex-col">
-      <button
-        className="w-full p-2 text-start"
-        onClick={() => navigate("stats")}
-      >
-        &lt; Back To Statistics Overview
+      <button className="w-full p-2 text-start" onClick={() => navigate(-1)}>
+        &lt; Back
       </button>
       <hr />
       <div ref={parentRef} className="flex-grow overflow-y-scroll">

@@ -112,7 +112,7 @@ interface Store {
   monthsWithEntries: { month: number; year: number }[];
   digestUpdate(
     update: StatusUpdate,
-    is_old_out_of_order_update?: boolean
+    is_old_out_of_order_update?: boolean,
   ): void;
   /** gets all entries that have no end, sorted by start time */
   getOpenEntries(): TaskEntry[];
@@ -127,7 +127,7 @@ interface Store {
    */
   getTimeSpendByLabel(
     startTS: number,
-    endTS?: number
+    endTS?: number,
   ): { label: string; timeSpend: Duration }[];
   refreshMonthsWithEntry(): void;
 
@@ -187,7 +187,7 @@ export const useStore = create<Store>((set, get) => ({
       if (get().entries.findIndex(({ id }) => id === action.id) !== -1) {
         console.warn(
           "Ignoring adding event with an id that already exists: ",
-          action.id
+          action.id,
         );
         return;
       }
@@ -227,7 +227,7 @@ export const useStore = create<Store>((set, get) => ({
           what: `${
             is_old_out_of_order_update ? "[trying again]" : ""
           }tried to end entry but it does not exist (yet?), saving action for later: ${JSON.stringify(
-            action
+            action,
           )}`,
           when: update.action_ts,
         };
@@ -277,7 +277,7 @@ export const useStore = create<Store>((set, get) => ({
           what: `${
             is_old_out_of_order_update ? "[trying again]" : ""
           }tried to delete entry but it does not exist (yet?), saving action for later: ${JSON.stringify(
-            action
+            action,
           )}`,
           when: update.action_ts,
         };
@@ -319,7 +319,7 @@ export const useStore = create<Store>((set, get) => ({
           what: `${
             is_old_out_of_order_update ? "[trying again]" : ""
           }tried to edit entry but it does not exist (yet?), saving action for later: ${JSON.stringify(
-            action
+            action,
           )}`,
           when: update.action_ts,
         };
@@ -338,7 +338,7 @@ export const useStore = create<Store>((set, get) => ({
         const history = [];
         if (action.new_label) {
           history.push(
-            `changed label: '${entry.label}' -> '${action.new_label}'`
+            `changed label: '${entry.label}' -> '${action.new_label}'`,
           );
           const old_label = this.labels[entry.label];
           if (old_label) {
@@ -357,7 +357,7 @@ export const useStore = create<Store>((set, get) => ({
         }
         if (action.new_start) {
           history.push(
-            `changed start: '${entry.start}' -> '${action.new_start}'`
+            `changed start: '${entry.start}' -> '${action.new_start}'`,
           );
           entry.start = action.new_start;
         }
@@ -373,7 +373,7 @@ export const useStore = create<Store>((set, get) => ({
           entry.is_break != action.new_is_break
         ) {
           history.push(
-            `changed is break: ${entry.is_break} -> ${action.new_is_break}`
+            `changed is break: ${entry.is_break} -> ${action.new_is_break}`,
           );
           entry.is_break = action.new_is_break;
           if (action.new_is_break) {
@@ -411,7 +411,7 @@ export const useStore = create<Store>((set, get) => ({
   getOpenEntries(): TaskEntry[] {
     return get()
       .entries.filter(
-        ({ end, deleted }) => typeof end === "undefined" && !deleted
+        ({ end, deleted }) => typeof end === "undefined" && !deleted,
       )
       .sort((a, b) => a.start - b.start);
   },
@@ -424,7 +424,7 @@ export const useStore = create<Store>((set, get) => ({
     } else {
       this.internal_lastEntries = entries;
       return (this.internal_lastEntries_filtered = entries.filter(
-        ({ deleted, is_break }) => !is_break && !deleted
+        ({ deleted, is_break }) => !is_break && !deleted,
       ));
     }
   },
@@ -464,7 +464,7 @@ export const useStore = create<Store>((set, get) => ({
     const entries = getEntriesInTimeframeCutToIt(
       get().getTrackedEntries(),
       startTS,
-      endTS
+      endTS,
     );
 
     const data: { [label: string]: number } = {};
@@ -493,7 +493,7 @@ export const useStore = create<Store>((set, get) => ({
       const monthsWithEntries = months.filter(
         (value, i, array) =>
           value.year !== array[i - 1]?.year ||
-          value.month !== array[i - 1]?.month
+          value.month !== array[i - 1]?.month,
       );
       return {
         monthsWithEntries,
@@ -561,10 +561,10 @@ export async function init() {
         }
 
         wait_for_payload_promises = wait_for_payload_promises.filter(
-          ({ resolved }) => !resolved
+          ({ resolved }) => !resolved,
         );
       }
-    }
+    },
   );
   useStore.getState().refreshMonthsWithEntry();
   initialized = true;
@@ -614,8 +614,8 @@ export function startEntry(label: string) {
       }),
     },
     `Timetracking entry ${id} started: '${label}' ${new Date(
-      ts
-    ).toLocaleString()}`
+      ts,
+    ).toLocaleString()}`,
   );
 }
 
@@ -623,7 +623,7 @@ export function startEntry(label: string) {
  * returns a promise that gets resolved when the edit was received */
 export function editEntry(
   id: string,
-  changed: Omit<EditEntry, "type" | "id">
+  changed: Omit<EditEntry, "type" | "id">,
 ): Promise<void> {
   let payload = makeUpdate({
     type: UpdateActionType.EditEntryType,
@@ -636,7 +636,7 @@ export function editEntry(
       payload,
     },
     `Timetracking entry '${id}' edited: ${JSON.stringify(changed)}
-    ).toLocaleString()}`
+    ).toLocaleString()}`,
   );
   return promise;
 }
@@ -645,7 +645,7 @@ export function endEntry(
   id: string,
   end = Date.now(),
   auto = false,
-  is_break = false
+  is_break = false,
 ) {
   const entry_label = useStore
     .getState()
@@ -665,8 +665,8 @@ export function endEntry(
       }),
     },
     `Timetracking entry '${id}' ended: '${entry_label}' ${new Date(
-      end
-    ).toLocaleString()}`
+      end,
+    ).toLocaleString()}`,
   );
 }
 
@@ -685,7 +685,7 @@ export function markEntryAsDeleted(id: string) {
         id,
       }),
     },
-    `Timetracking entry '${id}' marked as deleted: '${entry_label}'}`
+    `Timetracking entry '${id}' marked as deleted: '${entry_label}'}`,
   );
 }
 
@@ -701,6 +701,6 @@ export function importEntries(entries: TaskEntry[]) {
         entries,
       }),
     },
-    `Import of ${entries.length} entries`
+    `Import of ${entries.length} entries`,
   );
 }

@@ -32,14 +32,14 @@ export function QuickStats() {
     const working_data = getEntriesTouchingTimeframe(
       entries,
       now.startOf("month").minus({ month: 1 }).toMillis(),
-      now.toMillis()
+      now.toMillis(),
     );
     const last_week = durationFromCappedEntries(
       getEntriesInTimeframeCutToIt(
         working_data,
         now.startOf("week").minus({ week: 1 }).toMillis(),
-        now.startOf("week").toMillis()
-      )
+        now.startOf("week").toMillis(),
+      ),
     ).shiftTo("hours", "minute");
 
     const start_of_last_month = now.startOf("month").minus({ month: 1 });
@@ -47,8 +47,8 @@ export function QuickStats() {
       getEntriesInTimeframeCutToIt(
         working_data,
         start_of_last_month.toMillis(),
-        start_of_last_month.endOf("month").toMillis()
-      )
+        start_of_last_month.endOf("month").toMillis(),
+      ),
     ).shiftTo("hours", "minute");
 
     const update = () => {
@@ -57,22 +57,22 @@ export function QuickStats() {
         getEntriesInTimeframeCutToIt(
           working_data,
           now.startOf("day").toMillis(),
-          now.toMillis()
-        )
+          now.toMillis(),
+        ),
       ).shiftTo("hours", "minute");
       const this_week = durationFromCappedEntries(
         getEntriesInTimeframeCutToIt(
           working_data,
           now.startOf("week").toMillis(),
-          now.toMillis()
-        )
+          now.toMillis(),
+        ),
       ).shiftTo("hours", "minute");
       const this_month = durationFromCappedEntries(
         getEntriesInTimeframeCutToIt(
           working_data,
           now.startOf("month").toMillis(),
-          now.toMillis()
-        )
+          now.toMillis(),
+        ),
       ).shiftTo("hours", "minute");
 
       setStats({

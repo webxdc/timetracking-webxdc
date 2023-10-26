@@ -114,7 +114,7 @@ export function TrackPage() {
   const hide_track_page_stats =
     localStorage.getItem("hide_track_page_stats") === "true";
   const [failedToEndEntry, setFailedToEndEntry] = useState<TaskEntry | null>(
-    null
+    null,
   );
 
   const create = () => {
@@ -381,7 +381,7 @@ function FailedToEndDialog({
           // 30 seconds is the minimum
           endEntry(
             entry.id,
-            DateTime.fromMillis(entry.start).plus({ seconds: 30 }).toMillis()
+            DateTime.fromMillis(entry.start).plus({ seconds: 30 }).toMillis(),
           );
         } else if (parsed_date_time.diffNow().toMillis() > 1) {
           // is in future

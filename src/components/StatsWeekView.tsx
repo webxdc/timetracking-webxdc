@@ -45,7 +45,7 @@ export function WeekView({
     const entries_in_span = getEntriesTouchingTimeframe(
       entries,
       working_day.toMillis(),
-      end.toMillis()
+      end.toMillis(),
     );
 
     // remove all running entries because they would make the stats useless
@@ -58,7 +58,7 @@ export function WeekView({
       const dayEntries = getEntriesInTimeframeCutToIt(
         entries_in_span_cleaned,
         startOfDay.toMillis(),
-        endOfDay.toMillis()
+        endOfDay.toMillis(),
       );
       const timeSpentThatDay = dayEntries
         .map((e) => e.duration || 0)
@@ -83,8 +83,8 @@ export function WeekView({
     setTotal(
       Duration.fromObject({ minutes: total_minutes }).shiftTo(
         "hours",
-        "minutes"
-      )
+        "minutes",
+      ),
     );
   }, [`${entries.length}`, timeSpan[0], timeSpan[1]]);
 

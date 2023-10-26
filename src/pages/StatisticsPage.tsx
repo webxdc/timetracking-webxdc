@@ -14,14 +14,14 @@ import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
 
 ChartJS.register(MatrixController, MatrixElement);
 
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useStore } from "../store";
+import { useEffect, useMemo, useState } from "react";
 import { DateTime, Duration } from "luxon";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../store";
 import {
   getEntriesInTimeframeCutToIt,
   getEntriesTouchingTimeframe,
 } from "../entryMaths";
-import { NavigationContext } from "../App";
 import { WeekView } from "../components/StatsWeekView";
 import { QuickStats } from "../components/TrackPageStats";
 import { MonthView } from "../components/StatsMonthViewDays";
@@ -32,10 +32,10 @@ export function StatisticsPage() {
   const currentYear = now.year;
   const currentWeek = now.weekNumber;
   const currentMonth = now.month;
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
 
   const [timePerDayMode, setTimePerDayMode] = useState<"week" | "month">(
-    "week"
+    "week",
   );
 
   const timePerDayModeOptions: {
@@ -126,14 +126,14 @@ export function StatisticsPage() {
         <hr />
         <button
           className="w-full p-2 text-start"
-          onClick={() => navigate("stats/weeks")}
+          onClick={() => navigate("/stats/weeks")}
         >
           View All Weeks &gt;
         </button>
         <hr />
         <button
           className="w-full p-2 text-start"
-          onClick={() => navigate("stats/months")}
+          onClick={() => navigate("/stats/months")}
         >
           View All Months &gt;
         </button>
@@ -210,7 +210,7 @@ function ActivityMap() {
     const entries_in_span = getEntriesTouchingTimeframe(
       entries,
       working_day.toMillis(),
-      end.toMillis()
+      end.toMillis(),
     );
 
     // remove all running entries because they would make the stats useless
@@ -223,7 +223,7 @@ function ActivityMap() {
       const dayEntries = getEntriesInTimeframeCutToIt(
         entries_in_span_cleaned,
         startOfDay.toMillis(),
-        endOfDay.toMillis()
+        endOfDay.toMillis(),
       );
       const timeSpentThatDay = dayEntries
         .map((e) => e.duration || 0)
