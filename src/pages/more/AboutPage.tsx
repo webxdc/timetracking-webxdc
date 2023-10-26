@@ -17,7 +17,7 @@ export function AboutPage() {
       </button>
       <hr />
       <div className="overflow-y-scroll">
-        <h1 className="px-2 py-1 text-2xl">About Timetracking webxdc</h1>
+        <h1 className="px-2 py-1 text-2xl">About Timetracking</h1>
         <div className="px-2">
           <p>
             This is a simple timetracking webxdc app, it meant to be used by{" "}

@@ -10,7 +10,7 @@ export function MorePage() {
     <div className="p-5">
       <div className="flex flex-col items-center pb-4">
         <img className="w-28 rounded-lg" src="icon.png" />
-        <div className="pt-2 text-2xl">TimeTracking.xdc</div>
+        <div className="pt-2 text-2xl">TimeTracking</div>
         <div className="text-sm">Version {version}</div>
       </div>
       <div className="m-1">
@@ -18,7 +18,7 @@ export function MorePage() {
           className="w-full p-2 text-start"
           onClick={() => navigate("/more/about")}
         >
-          About TimeTracking.xdc &gt;
+          About &gt;
         </button>
         <hr />
         <button
