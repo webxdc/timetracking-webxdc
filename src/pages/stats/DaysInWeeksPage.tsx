@@ -1,6 +1,6 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { DateTime } from "luxon";
-import { useContext, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { minWeekViewHeight, WeekView } from "../../components/StatsWeekView";
 import { useStore } from "../../store";

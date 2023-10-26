@@ -9,5 +9,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <Suspense fallback={<>Loading</>}>
       <RouterProvider router={router} />
     </Suspense>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

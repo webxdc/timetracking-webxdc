@@ -1,5 +1,5 @@
 import { DateTime, Duration } from "luxon";
-import { importEntries, TaskEntry } from "./store";
+import { TaskEntry } from "./store";
 
 type SimonsBotFormatEntry = {
   /** date in DD.MM.YY example "01.03.23" */
