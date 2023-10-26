@@ -11,6 +11,7 @@ import { QuickStats } from "../components/TrackPageStats";
 import { MonthView } from "../components/StatsMonthViewDays";
 import { TaskDistributionPie } from "../components/StatsTaskDistribution";
 import { ContributionCalendar } from "react-contribution-calendar";
+import { useIsDarkTheme } from "../util";
 
 export function StatisticsPage() {
   const now = DateTime.now();
@@ -170,6 +171,7 @@ const day_size = 12;
 const free_space = 70; // space for other stuff
 
 function ActivityMap() {
+  const isDarkTheme = useIsDarkTheme();
   type dataType2 = {
     [date: string]: {
       level: number;
@@ -252,10 +254,8 @@ function ActivityMap() {
   useEffect(() => {
     const update = () => {
       if (container.current) {
-        console.log("hi");
-        // TODO on reszie does not work yet
-
-        const availableWidth = container.current.getBoundingClientRect().width;
+        const availableWidth =
+          container.current.getBoundingClientRect().width - 30;
         const weeks = Math.floor(
           Math.max((availableWidth || 0) - free_space, 0) / day_size,
         );
@@ -265,35 +265,39 @@ function ActivityMap() {
     };
     if (container.current) {
       update();
-      window.addEventListener("resize", update);
-      return window.removeEventListener("resize", update);
     }
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, [container.current]);
 
   const start = timeSpan[0].toFormat("yyyy-MM-dd");
   const end = timeSpan[1].toFormat("yyyy-MM-dd");
+
+  const theme = isDarkTheme ? "dark_winter" : "winter";
 
   return (
     <div>
       {data2 === null && <div>Loading Data...</div>}
       <div className="w-full py-4" ref={container}>
         {availableWidth && data2 !== null && (
-          <ContributionCalendar
-            data={data2}
-            start={start}
-            end={end}
-            daysOfTheWeek={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
-            textColor="grey"
-            startsOnSunday={true}
-            includeBoundary={false}
-            theme="dark_winter"
-            cx={day_size}
-            cy={day_size}
-            cr={1}
-            onCellClick={(e, data) => console.log(data)}
-            scroll={false}
-            style={{}}
-          />
+          <div className="contribution-calendar">
+            <ContributionCalendar
+              data={data2}
+              start={start}
+              end={end}
+              daysOfTheWeek={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
+              textColor="grey"
+              startsOnSunday={true}
+              includeBoundary={false}
+              theme={theme}
+              cx={day_size}
+              cy={day_size}
+              cr={1}
+              onCellClick={(e, data) => console.log(data)}
+              scroll={false}
+              style={{}}
+            />
+          </div>
         )}
       </div>
     </div>
