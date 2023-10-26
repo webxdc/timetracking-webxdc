@@ -77,7 +77,7 @@ export function TaskDistributionPie({
 
   return (
     <div>
-      <table className="charts-css pie max-w-md w-2/4">
+      <table className="charts-css pie max-w-xs md:max-w-md w-2/4">
         <tbody>
           {labelsSortedWithPercentage.map((label) => (
             <tr>
@@ -91,28 +91,30 @@ export function TaskDistributionPie({
           ))}
         </tbody>
       </table>
-      <ul className="charts-css legend legend-square mt-2">
-        {labelsSortedWithPercentage.map((label) => (
-          <li
-            className="w-full flex"
-            key={btoa(label.label) + "-" + label.percentage}
-          >
-            <span className="flex-grow">
-              {label.label}: (
-              {label.timeSpend
-                .shiftTo("hours", "minutes", "milliseconds")
-                .set({ milliseconds: 0 })
-                .shiftTo("hours", "minutes")
-                .toHuman({ unitDisplay: "short" })}
-              )
-            </span>
+      <div className="mx-2 mt-2">
+        <ul className="charts-css legend legend-square">
+          {labelsSortedWithPercentage.map((label) => (
+            <li
+              className="w-full flex"
+              key={btoa(label.label) + "-" + label.percentage}
+            >
+              <span className="flex-grow">
+                {label.label}: (
+                {label.timeSpend
+                  .shiftTo("hours", "minutes", "milliseconds")
+                  .set({ milliseconds: 0 })
+                  .shiftTo("hours", "minutes")
+                  .toHuman({ unitDisplay: "short" })}
+                )
+              </span>
 
-            <span className="float-right">
-              {Math.round(label.percentage * 10000) / 100}%
-            </span>
-          </li>
-        ))}
-      </ul>
+              <span className="float-right">
+                {Math.round(label.percentage * 10000) / 100}%
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
