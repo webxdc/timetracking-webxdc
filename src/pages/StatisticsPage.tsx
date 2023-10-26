@@ -1,20 +1,4 @@
-import { Chart, ChartProps } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  Title,
-  CategoryScale,
-  TimeScale,
-  Tooltip,
-} from "chart.js";
-import "chartjs-adapter-luxon";
-
-ChartJS.register(Title, CategoryScale, TimeScale, Tooltip);
-
-import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
-
-ChartJS.register(MatrixController, MatrixElement);
-
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DateTime, Duration } from "luxon";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../store";
@@ -26,6 +10,8 @@ import { WeekView } from "../components/StatsWeekView";
 import { QuickStats } from "../components/TrackPageStats";
 import { MonthView } from "../components/StatsMonthViewDays";
 import { TaskDistributionPie } from "../components/StatsTaskDistribution";
+import { ContributionCalendar } from "react-contribution-calendar";
+import { useIsDarkTheme } from "../util";
 
 export function StatisticsPage() {
   const now = DateTime.now();
@@ -139,7 +125,7 @@ export function StatisticsPage() {
         </button>
         <hr />
       </div>
-      <div className="divider">Current Year</div>
+      <div className="divider">Heatmap</div>
       <ActivityMap />
       <div className="divider">Time spend by Task</div>
 
@@ -178,34 +164,39 @@ export function StatisticsPage() {
   );
 }
 
+const maxFeasableMinutesPerDay = 60 * 8;
+// const maxPossibleMinutesPerDay = 60 * 24;
+
+const day_size = 12;
+const free_space = 70; // space for other stuff
+
 function ActivityMap() {
-  type dataType = {
-    x: string;
-    y: string;
-    d: string;
-    v: number;
+  const isDarkTheme = useIsDarkTheme();
+  type dataType2 = {
+    [date: string]: {
+      level: number;
+      data: {
+        // this is not a lib feature yet
+        custom_tooltip: string;
+      };
+    };
   };
-  const [data, setData] = useState<dataType[] | null>(null);
+  const [data2, setData2] = useState<dataType2[] | null>(null);
 
   const entries = useStore((store) => store.getTrackedEntries());
 
-  const [timeSpan] = useState([
-    DateTime.now()
-      .minus(Duration.fromObject({ year: 1 }))
-      .toMillis(),
-    DateTime.now().endOf("day").toMillis(),
+  const [timeSpan, setTimeSpan] = useState([
+    DateTime.now().minus(Duration.fromObject({ year: 1 })),
+    DateTime.now().endOf("day"),
   ]);
-  console.log(entries.length);
 
   useEffect(() => {
-    console.log(entries.length, timeSpan[0], timeSpan[1]);
-
     // idea for later: move work into webworker?
-    setData(null);
+    setData2(null);
 
-    const dataEntries: dataType[] = [];
-    let working_day = DateTime.fromMillis(timeSpan[0]);
-    const end = DateTime.fromMillis(timeSpan[1]);
+    const data2Entries: dataType2[] = [];
+    let working_day = timeSpan[0];
+    const end = timeSpan[1];
     // this is for improving performance a little bit
     const entries_in_span = getEntriesTouchingTimeframe(
       entries,
@@ -229,167 +220,86 @@ function ActivityMap() {
         .map((e) => e.duration || 0)
         .reduce((previous, current) => previous + current, 0);
 
-      dataEntries.push({
-        x: startOfDay.toISODate() || "",
-        y: String(startOfDay.weekday),
-        v: Math.floor(timeSpentThatDay / 60000), // convert to minutes per day
-        d: startOfDay.toISODate() || "",
+      const minutes = Math.floor(timeSpentThatDay / 60000); // convert to minutes per day
+
+      const level = Math.min(
+        Math.max(Math.floor((minutes / maxFeasableMinutesPerDay) * 4), 0),
+        4,
+      );
+
+      data2Entries.push({
+        [startOfDay.toFormat("yyyy-MM-dd")]: {
+          level,
+          data: {
+            custom_tooltip:
+              startOfDay.toFormat("yyyy-MM-dd") +
+              "\n" +
+              Duration.fromObject({ minutes })
+                .shiftTo("hours", "minutes")
+                .toHuman(),
+          },
+        },
       });
 
       working_day = working_day.plus({ days: 1 });
     }
-    console.log(dataEntries);
+    // console.log(dataEntries);
 
-    setData(dataEntries);
+    setData2(data2Entries);
   }, [`${entries.length}`, timeSpan[0], timeSpan[1]]);
 
-  const { options, chartData } = useMemo(() => {
-    const scales: any = {
-      y: {
-        type: "time",
-        offset: true,
-        time: {
-          unit: "day",
-          round: "day",
-          isoWeekday: 1,
-          parser: "E",
-          displayFormats: {
-            day: "EEE",
-          },
-        },
-        reverse: true,
-        position: "right",
-        ticks: {
-          maxRotation: 0,
-          autoSkip: true,
-          padding: 1,
-          font: {
-            size: 9,
-          },
-        },
-        grid: {
-          display: false,
-          drawBorder: false,
-          tickLength: 0,
-        },
-      },
-      x: {
-        type: "time",
-        position: "bottom",
-        offset: true,
-        time: {
-          unit: "week",
-          round: "week",
-          isoWeekday: 1,
-          displayFormats: {
-            week: "MMM dd",
-          },
-        },
-        ticks: {
-          maxRotation: 0,
-          autoSkip: true,
-          font: {
-            size: 9,
-          },
-        },
-        grid: {
-          display: false,
-          drawBorder: false,
-          tickLength: 0,
-        },
-      },
-    };
-    const options: ChartProps<
-      "matrix",
-      { x: string; y: string; d: string; v: number }[],
-      unknown
-    >["options"] = {
-      responsive: true,
-      aspectRatio: 5,
-      plugins: {
-        tooltip: {
-          displayColors: false,
-          callbacks: {
-            title(items) {
-              const context = items[0];
-              if (context) {
-                return (
-                  context.dataset.data[context.dataIndex] as any as dataType
-                ).d;
-              }
-            },
-            label(context) {
-              const { v } = context.dataset.data[
-                context.dataIndex
-              ] as any as dataType;
-              return Duration.fromObject({ minutes: v })
-                .shiftTo("hours", "minutes")
-                .toHuman();
-            },
-          },
-        },
-      },
-      scales: scales,
-      layout: {
-        padding: {
-          top: 10,
-        },
-      },
-    };
+  const container = useRef<HTMLDivElement | null>(null);
+  const [availableWidth, setAvailableWidth] = useState<number | null>(null);
 
-    const maxFeasableMinutesPerDay = 60 * 8;
-    // const maxPossibleMinutesPerDay = 60 * 24;
-
-    const chartData: ChartProps<
-      "matrix",
-      { x: string; y: string; d: string; v: number }[],
-      unknown
-    >["data"] = {
-      datasets: [
-        {
-          data: data || [],
-          backgroundColor(c) {
-            const minutes = (c.dataset.data[c.dataIndex] as any as dataType).v;
-            const alpha = minutes / maxFeasableMinutesPerDay;
-            let green = 255;
-            if (alpha > 1) {
-              green = 255 - 255 * (alpha - 1);
-            }
-            return `rgba(0,${green},200, ${alpha})`;
-          },
-          borderColor(c) {
-            const minutes = (c.dataset.data[c.dataIndex] as any as dataType).v;
-            const alpha = minutes / maxFeasableMinutesPerDay;
-            let green = 255;
-            if (alpha > 1) {
-              green = 255 - 255 * (alpha - 1);
-            }
-            return `rgba(0,${green},200, ${alpha})`;
-          },
-          borderWidth: 1,
-          hoverBackgroundColor: "lightblue",
-          hoverBorderColor: "blue",
-          width(c) {
-            const a = c.chart.chartArea || {};
-            return (a.right - a.left) / 53 - 1;
-          },
-          height(c) {
-            const a = c.chart.chartArea || {};
-            return (a.bottom - a.top) / 7 - 1;
-          },
-        },
-      ],
+  useEffect(() => {
+    const update = () => {
+      if (container.current) {
+        const availableWidth =
+          container.current.getBoundingClientRect().width - 30;
+        const weeks = Math.floor(
+          Math.max((availableWidth || 0) - free_space, 0) / day_size,
+        );
+        setTimeSpan([DateTime.now().minus({ weeks }), DateTime.now()]);
+        setAvailableWidth(availableWidth);
+      }
     };
+    if (container.current) {
+      update();
+    }
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [container.current]);
 
-    return { options, chartData };
-  }, [data]);
+  const start = timeSpan[0].toFormat("yyyy-MM-dd");
+  const end = timeSpan[1].toFormat("yyyy-MM-dd");
+
+  const theme = isDarkTheme ? "dark_winter" : "winter";
 
   return (
     <div>
-      {data === null && <div>Loading Data...</div>}
-      {data !== null && (
-        <Chart options={options} type={"matrix"} data={chartData} />
-      )}
+      {data2 === null && <div>Loading Data...</div>}
+      <div className="w-full py-4" ref={container}>
+        {availableWidth && data2 !== null && (
+          <div className="contribution-calendar">
+            <ContributionCalendar
+              data={data2}
+              start={start}
+              end={end}
+              daysOfTheWeek={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
+              textColor="grey"
+              startsOnSunday={true}
+              includeBoundary={false}
+              theme={theme}
+              cx={day_size}
+              cy={day_size}
+              cr={1}
+              onCellClick={(e, data) => console.log(data)}
+              scroll={false}
+              style={{}}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

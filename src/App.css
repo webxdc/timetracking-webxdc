@@ -45,3 +45,9 @@ html {
     --color: rgb(0, 69, 198);
   }
 }
+
+/* workaround because library has annoying breakpoints that hide parts of the graph */
+.contribution-calendar > .container {
+  width: 100% !important;
+  max-width: 100% !important;
+}

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 // taken from https://blog.logrocket.com/react-suspense-data-fetching/#how-to-use-suspense
 /** convert promise to suspend */
 export function wrapPromise<T>(promise: Promise<T>) {
@@ -38,4 +40,25 @@ export function arrayMin(arr: number[]) {
     }
   }
   return min;
+}
+
+export function useIsDarkTheme() {
+  const [isDarkTheme, setIsDarkTheme] = useState(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+  useEffect(() => {
+    if (!window.matchMedia) {
+      return;
+    }
+    const mm = window.matchMedia("(prefers-color-scheme: dark)");
+    const callback = (event: MediaQueryListEvent) => {
+      setIsDarkTheme(event.matches);
+    };
+
+    mm.addEventListener("change", callback);
+    return () => mm.removeEventListener("change", callback);
+  });
+
+  return isDarkTheme;
 }
