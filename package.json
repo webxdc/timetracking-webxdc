@@ -31,7 +31,7 @@
     "prettier-plugin-tailwindcss": "^0.2.3",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
-    "react-contribution-calendar": "^1.3.5",
+    "react-contribution-calendar": "^1.4.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.0",
     "react-router-dom": "^6.17.0",
