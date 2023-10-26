@@ -6,6 +6,7 @@
 - fix weird sidewards overscrolling bug in statistics/weekPage
 - add "Time spend by task" to Statistics
 - move to react-router for routing
+- add yesterday to quickstats
 
 ## 0.5.0
 
