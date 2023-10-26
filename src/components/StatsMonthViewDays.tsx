@@ -39,7 +39,7 @@ export function MonthView({ year, month }: { year: number; month: number }) {
     const entries_in_span = getEntriesTouchingTimeframe(
       entries,
       working_day.toMillis(),
-      end.toMillis()
+      end.toMillis(),
     );
 
     // remove all running entries because they would make the stats useless
@@ -52,7 +52,7 @@ export function MonthView({ year, month }: { year: number; month: number }) {
       const dayEntries = getEntriesInTimeframeCutToIt(
         entries_in_span_cleaned,
         startOfDay.toMillis(),
-        endOfDay.toMillis()
+        endOfDay.toMillis(),
       );
       const timeSpentThatDay = dayEntries
         .map((e) => e.duration || 0)
@@ -79,8 +79,8 @@ export function MonthView({ year, month }: { year: number; month: number }) {
     setTotal(
       Duration.fromObject({ minutes: total_minutes }).shiftTo(
         "hours",
-        "minutes"
-      )
+        "minutes",
+      ),
     );
   }, [`${entries.length}`, timeSpan[0], timeSpan[1]]);
 

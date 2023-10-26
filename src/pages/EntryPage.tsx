@@ -1,7 +1,7 @@
-import { Switch } from "@headlessui/react";
 import { DateTime, Duration } from "luxon";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { editEntry, markEntryAsDeleted, TaskEntry, useStore } from "../store";
 
 const dateTimeToInputDateString = (time: DateTime) => {
@@ -15,13 +15,10 @@ const inputDateStringToDateTime = (datetime_string: string) => {
   return date.plus(Duration.fromObject({ hour, minute }));
 };
 
-export function EntryPage<T>({
-  id,
-  selectEntry,
-}: {
-  id: TaskEntry["id"];
-  selectEntry: (id: null) => void;
-}) {
+export function EntryPage() {
+  let { id } = useParams();
+  const navigate = useNavigate();
+
   const { entry, history } = useStore((store) => ({
     entry: store.entries.find((e) => e.id === id),
     history: store.actionHistory.filter((h) => h.id === id),
@@ -30,7 +27,7 @@ export function EntryPage<T>({
   if (!entry) {
     console.log("entry not found, id:", id, entry);
     // go back if not found
-    selectEntry(null);
+    navigate(-1);
     return null;
   }
 
@@ -39,7 +36,7 @@ export function EntryPage<T>({
   return (
     <div className="absolute top-0 flex h-full w-full flex-col bg-slate-100">
       <div className="flex items-center bg-slate-200 py-2">
-        <button className="btn" onClick={selectEntry.bind(null, null)}>
+        <button className="btn" onClick={() => navigate(-1)}>
           Back
         </button>
         <h1
@@ -157,7 +154,7 @@ function EntryEditForm({
         newValues.start
       ) {
         const converted_start: DateTime = inputDateStringToDateTime(
-          newValues.start
+          newValues.start,
         );
         updated_properties.new_start = converted_start.toMillis();
       }
@@ -168,7 +165,7 @@ function EntryEditForm({
         newValues.end
       ) {
         const converted_end: DateTime = inputDateStringToDateTime(
-          newValues.end
+          newValues.end,
         );
         updated_properties.new_end = converted_end.toMillis();
       }
@@ -177,10 +174,10 @@ function EntryEditForm({
     if (entry.end || newValues.end) {
       // todo check that duration is over 1 and not negative
       const start = DateTime.fromMillis(
-        updated_properties.new_start || entry.start
+        updated_properties.new_start || entry.start,
       );
       const end = DateTime.fromMillis(
-        updated_properties.new_end || (entry.end as number)
+        updated_properties.new_end || (entry.end as number),
       );
       const duration = end.diff(start);
       if (duration.toMillis() < 1000) {
@@ -190,7 +187,7 @@ function EntryEditForm({
           duration,
         });
         throw new Error(
-          "error: duration is negative or smaller than one second"
+          "error: duration is negative or smaller than one second",
         );
         // todo show error to user (maybe form has fancy validation errors?)
       }

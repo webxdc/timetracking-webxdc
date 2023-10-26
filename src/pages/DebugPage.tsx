@@ -7,10 +7,10 @@ export function DebugPage() {
 
   const total_entries = store.entries.length;
   const non_deleted_entries = store.entries.filter(
-    ({ deleted }) => !deleted
+    ({ deleted }) => !deleted,
   ).length;
   const break_entries = store.entries.filter(
-    ({ deleted, is_break }) => !deleted && is_break
+    ({ deleted, is_break }) => !deleted && is_break,
   ).length;
   const normal_entries = non_deleted_entries - break_entries;
   const deleted_entries = total_entries - normal_entries;
@@ -48,7 +48,7 @@ export function DebugPage() {
         {[...store.actionHistory].reverse().map((ah) => (
           <div className="m-2" key={ah.who + ah.when + ah.id}>
             {DateTime.fromMillis(ah.when).toLocaleString(
-              DateTime.DATETIME_SHORT
+              DateTime.DATETIME_SHORT,
             )}
             : {ah.who}: {ah.what}{" "}
             {ah.id ? (

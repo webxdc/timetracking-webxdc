@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
-import { NavigationContext } from "../../App";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function OptionsPage() {
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
 
   const [auto_complete, internal_set_autocomplete] = useState(
-    localStorage.getItem("autocomplete_enabled") === "true"
+    localStorage.getItem("autocomplete_enabled") === "true",
   );
   const setAutoComplete = (value: boolean) => {
     localStorage.setItem("autocomplete_enabled", String(!auto_complete));
@@ -13,7 +13,7 @@ export function OptionsPage() {
   };
 
   const [hide_track_page_stats, internal_set_hide_track_page_stats] = useState(
-    localStorage.getItem("hide_track_page_stats") === "true"
+    localStorage.getItem("hide_track_page_stats") === "true",
   );
   const setHideTrackPageStats = (value: boolean) => {
     localStorage.setItem("hide_track_page_stats", String(value));
@@ -22,11 +22,8 @@ export function OptionsPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <button
-        className="w-full p-2 text-start"
-        onClick={() => navigate("more")}
-      >
-        &lt; Back To More
+      <button className="w-full p-2 text-start" onClick={() => navigate(-1)}>
+        &lt; Back
       </button>
       <hr />
       <div className="overflow-y-scroll">

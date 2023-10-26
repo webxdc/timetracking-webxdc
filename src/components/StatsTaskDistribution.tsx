@@ -15,7 +15,7 @@ export function TaskDistributionPie({
 
   const time_spent_total = time_spent_by_label.reduce(
     (p, c) => p + c.timeSpend.toMillis(),
-    0
+    0,
   );
 
   const rawLabels: {

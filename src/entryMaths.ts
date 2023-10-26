@@ -8,7 +8,7 @@ function inRange(point: number, start: number, end: number) {
 export function isEntryTouchingTimeframe(
   entry: TaskEntry,
   start: number,
-  end: number
+  end: number,
 ) {
   // {} is timeframe, [] is entry
   // yes
@@ -36,7 +36,7 @@ export function isEntryTouchingTimeframe(
 export function getEntriesTouchingTimeframe(
   entries: TaskEntry[],
   start: number,
-  end: number
+  end: number,
 ) {
   return entries.filter((entry) => isEntryTouchingTimeframe(entry, start, end));
 }
@@ -48,7 +48,7 @@ export function getEntriesTouchingTimeframe(
 export function getEntriesInTimeframeCutToIt(
   entries: TaskEntry[],
   start: number,
-  end: number
+  end: number,
 ) {
   const inFrame = getEntriesTouchingTimeframe(entries, start, end);
   const inFrameCloned: TaskEntry[] = JSON.parse(JSON.stringify(inFrame));
@@ -79,7 +79,7 @@ export function getEntriesInTimeframeCutToIt(
 }
 
 export function getMonthsOfEntry(
-  entry: TaskEntry
+  entry: TaskEntry,
 ): { month: number; year: number }[] {
   const start = DateTime.fromMillis(entry.start);
   const startMonth: { month: number; year: number } = {

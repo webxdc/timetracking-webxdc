@@ -1,9 +1,9 @@
-import { Suspense, useContext } from "react";
-import { NavigationContext } from "../../App";
+import { Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import { wrapPromise } from "../../util";
 
 export function CreditsPage() {
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
   const devmode = () => {
     const devmode = localStorage.getItem("devmode") === "true" || false;
     localStorage.setItem("devmode", String(!devmode));
@@ -12,11 +12,8 @@ export function CreditsPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <button
-        className="w-full p-2 text-start"
-        onClick={() => navigate("more")}
-      >
-        &lt; Back To More
+      <button className="w-full p-2 text-start" onClick={() => navigate(-1)}>
+        &lt; Back
       </button>
       <hr />
       <div className="overflow-y-scroll">
@@ -55,7 +52,7 @@ export function CreditsPage() {
 }
 
 const LicenseTXT = wrapPromise(
-  fetch("./DependencyLicenses.txt").then((r) => r.text())
+  fetch("./DependencyLicenses.txt").then((r) => r.text()),
 );
 
 function Licenses() {

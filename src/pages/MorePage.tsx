@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import { NavigationContext } from "../App";
+import { useNavigate } from "react-router-dom";
 import { version } from "../../package.json";
 
 export function MorePage() {
-  const { navigate } = useContext(NavigationContext);
+  const navigate = useNavigate();
 
   // const devModeActive = localStorage.getItem("devmode") === "true" || false;
 
@@ -17,28 +16,28 @@ export function MorePage() {
       <div className="m-1">
         <button
           className="w-full p-2 text-start"
-          onClick={() => navigate("more/about")}
+          onClick={() => navigate("/more/about")}
         >
           About TimeTracking.xdc &gt;
         </button>
         <hr />
         <button
           className="w-full p-2 text-start"
-          onClick={() => navigate("more/options")}
+          onClick={() => navigate("/more/options")}
         >
           Options &gt;
         </button>
         <hr />
         <button
           className="w-full p-2 text-start"
-          onClick={() => navigate("more/backup")}
+          onClick={() => navigate("/more/backup")}
         >
           Backup (Import / Export) &gt;
         </button>
         <hr />
         <button
           className="w-full p-2 text-start"
-          onClick={() => navigate("more/credits")}
+          onClick={() => navigate("/more/credits")}
         >
           Credits &gt;
         </button>

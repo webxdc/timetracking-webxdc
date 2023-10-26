@@ -1,4 +1,11 @@
 // debug friend: document.writeln(JSON.stringify(value));
+//===========================================================
+//
+// This version of the hello-repo simulator has 2 mods compared to the orginal
+// - it uses ?GET parameters instead of #anchors
+// - it has a button to hide/close the overlay
+//
+//===========================================================
 //@ts-check
 /** @type {import('webxdc-types').Webxdc<any>} */
 window.webxdc = (() => {
@@ -21,7 +28,7 @@ window.webxdc = (() => {
     return updatesJSON ? JSON.parse(updatesJSON) : [];
   }
 
-  var params = new URLSearchParams(window.location.hash.substr(1));
+  var params = new URLSearchParams(window.location.search.substr(1));
   return {
     selfAddr: params.get("addr") || "device0@local.host",
     selfName: params.get("name") || "device0",
@@ -54,7 +61,10 @@ window.webxdc = (() => {
       window.localStorage.setItem(updatesKey, JSON.stringify(updates));
       _update.max_serial = serial;
       console.log(
-        '[Webxdc] description="' + description + '", ' + JSON.stringify(_update)
+        '[Webxdc] description="' +
+          description +
+          '", ' +
+          JSON.stringify(_update),
       );
       updateListener(_update);
     },
@@ -62,7 +72,7 @@ window.webxdc = (() => {
       if (!content.file && !content.text) {
         alert("🚨 Error: either file or text need to be set. (or both)");
         return Promise.reject(
-          "Error from sendToChat: either file or text need to be set"
+          "Error from sendToChat: either file or text need to be set",
         );
       }
 
@@ -89,11 +99,11 @@ window.webxdc = (() => {
         }
         if (
           Object.keys(content.file).filter((key) =>
-            ["blob", "base64", "plainText"].includes(key)
+            ["blob", "base64", "plainText"].includes(key),
           ).length > 1
         ) {
           return Promise.reject(
-            "you can only set one of `blob`, `base64` or `plainText`, not multiple ones"
+            "you can only set one of `blob`, `base64` or `plainText`, not multiple ones",
           );
         }
 
@@ -109,11 +119,11 @@ window.webxdc = (() => {
         } else if (typeof content.file.plainText === "string") {
           base64Content = await blob_to_base64(
             // @ts-ignore - needed because typescript imagines that plainText would not exist
-            new Blob([content.file.plainText])
+            new Blob([content.file.plainText]),
           );
         } else {
           return Promise.reject(
-            "data is not set or wrong format, set one of `blob`, `base64` or `plainText`, see webxdc documentation for sendToChat"
+            "data is not set or wrong format, set one of `blob`, `base64` or `plainText`, see webxdc documentation for sendToChat",
           );
         }
       }
@@ -126,13 +136,13 @@ window.webxdc = (() => {
       }`;
       if (content.file) {
         const confirmed = confirm(
-          msg + "\n\nDownload the file in the browser instead?"
+          msg + "\n\nDownload the file in the browser instead?",
         );
         if (confirmed) {
           var element = document.createElement("a");
           element.setAttribute(
             "href",
-            "data:application/octet-stream;base64," + base64Content
+            "data:application/octet-stream;base64," + base64Content,
           );
           element.setAttribute("download", content.file.name);
           document.body.appendChild(element);
@@ -171,7 +181,7 @@ window.webxdc = (() => {
 window.addXdcPeer = () => {
   var loc = window.location;
   // get next peer ID
-  var params = new URLSearchParams(loc.hash.substr(1));
+  var params = new URLSearchParams(loc.search.substr(1));
   var peerId = Number(params.get("next_peer")) || 1;
 
   // open a new window
@@ -181,7 +191,7 @@ window.addXdcPeer = () => {
     "//" +
     loc.host +
     loc.pathname +
-    "#name=" +
+    "?name=" +
     peerName +
     "&addr=" +
     peerName +
@@ -190,7 +200,7 @@ window.addXdcPeer = () => {
 
   // update next peer ID
   params.set("next_peer", String(peerId + 1));
-  window.location.hash = "#" + params.toString();
+  window.location.search = "?" + params.toString();
 };
 
 window.clearXdcStorage = () => {
