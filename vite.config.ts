@@ -17,4 +17,5 @@ export default defineConfig({
         ".xdc",
     }),
   ],
+  build: { chunkSizeWarningLimit: 600 },
 });
