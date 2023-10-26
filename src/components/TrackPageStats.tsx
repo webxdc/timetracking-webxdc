@@ -17,6 +17,7 @@ const durationFromCappedEntries = (entries: TaskEntry[]): Duration => {
 export function QuickStats() {
   type Stats = {
     today: Duration;
+    yesterday: Duration;
     this_week: Duration;
     last_week: Duration;
     this_month: Duration;
@@ -60,6 +61,13 @@ export function QuickStats() {
           now.toMillis(),
         ),
       ).shiftTo("hours", "minute");
+      const yesterday = durationFromCappedEntries(
+        getEntriesInTimeframeCutToIt(
+          working_data,
+          now.startOf("day").minus({ day: 1 }).toMillis(),
+          now.startOf("day").toMillis(),
+        ),
+      ).shiftTo("hours", "minute");
       const this_week = durationFromCappedEntries(
         getEntriesInTimeframeCutToIt(
           working_data,
@@ -77,6 +85,7 @@ export function QuickStats() {
 
       setStats({
         today,
+        yesterday,
         this_week,
         this_month,
         last_month,
@@ -98,6 +107,9 @@ export function QuickStats() {
             <div className="stat-title">Today</div>
             <div className="stat-value">
               {durationToDisplay(stats.today) || "0m"}
+            </div>
+            <div className="stat-desc">
+              Yesterday: {durationToDisplay(stats.yesterday) || "-"}
             </div>
           </div>
 
