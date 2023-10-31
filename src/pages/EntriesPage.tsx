@@ -14,6 +14,13 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useStore, TaskEntry, markEntryAsDeleted, endEntry } from "../store";
 import { useNavigate } from "react-router-dom";
 
+enum EntryType {
+  Daymarker,
+  TaskEntry,
+}
+
+type Daymarker = { id: string; type: EntryType.Daymarker; ts: number };
+
 export function EntriesPage() {
   const navigate = useNavigate();
   const raw_entries = useStore((store) => store.entries);
@@ -28,18 +35,32 @@ export function EntriesPage() {
     setShowBreaks(newValue);
   };
 
-  const entries = raw_entries
-    .filter(({ deleted, is_break }) => {
-      if (!showDeleted && deleted) {
-        return false;
-      }
-      if (!showBreaks && is_break) {
-        return false;
-      }
-      return true;
-    })
-    .sort((a, b) => a.start - b.start);
+  let entries: ((TaskEntry & { type: EntryType.TaskEntry }) | Daymarker)[] = [];
+
+  const sortedEntries = raw_entries.sort((a, b) => a.start - b.start);
   // for debugging, sort entries via duration .sort((a, b) => (a.duration || 0) - (b.duration || 0));
+
+  let currentEndOfDay = 0;
+  for (const entry of sortedEntries) {
+    const { deleted, is_break } = entry;
+    if ((!showDeleted && deleted) || (!showBreaks && is_break)) {
+      continue;
+    }
+
+    if (entry.start > currentEndOfDay) {
+      const newEndOfDay = DateTime.fromMillis(entry.start).endOf("day");
+      entries.push({
+        id: `daymarker${newEndOfDay.toUTC()}`,
+        type: EntryType.Daymarker,
+        ts: newEndOfDay.toMillis(),
+      });
+      currentEndOfDay = newEndOfDay.toMillis();
+    }
+
+    const newEntry = entry as TaskEntry & { type: EntryType.TaskEntry };
+    newEntry.type = EntryType.TaskEntry;
+    entries.push(newEntry);
+  }
 
   const parentRef = useRef<HTMLDivElement | null>(null);
 
@@ -89,32 +110,51 @@ export function EntriesPage() {
             position: "relative",
           }}
         >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => (
-            <div
-              key={virtualRow.key}
-              data-index={virtualRow.index}
-              ref={rowVirtualizer.measureElement}
-              className={
-                virtualRow.index % 2
-                  ? "bg-slate-100 dark:bg-slate-500"
-                  : "bg-slate-200 dark:bg-slate-600"
-              }
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              <Entry
-                entry={entries[virtualRow.index]}
-                onEdit={(id: TaskEntry["id"]) => navigate(`/entries/${id}`)}
-              />
-            </div>
-          ))}
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const entry = entries[virtualRow.index];
+            return (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={rowVirtualizer.measureElement}
+                className={
+                  entry.type === EntryType.Daymarker
+                    ? " bg-gray-300 dark:bg-gray-800"
+                    : virtualRow.index % 2
+                    ? "bg-slate-100 dark:bg-slate-500"
+                    : "bg-slate-200 dark:bg-slate-600"
+                }
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                {entry.type === EntryType.Daymarker && (
+                  <DayMarker ts={entry.ts} />
+                )}
+                {entry.type === EntryType.TaskEntry && (
+                  <Entry
+                    entry={entry}
+                    onEdit={(id: TaskEntry["id"]) => navigate(`/entries/${id}`)}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
+    </div>
+  );
+}
+
+function DayMarker({ ts }: { ts: number }) {
+  const time = DateTime.fromMillis(ts);
+  return (
+    <div className="m-2">
+      <b>{time.weekdayLong}</b> - {time.toLocaleString()}
     </div>
   );
 }
@@ -129,7 +169,7 @@ function Entry({
   const [showDeleteConfirmation, setShowDeleteConfirm] = useState(false);
 
   const startTime = DateTime.fromMillis(entry.start).toLocaleString(
-    DateTime.DATETIME_MED_WITH_WEEKDAY,
+    DateTime.TIME_SIMPLE,
   );
 
   let duration =
