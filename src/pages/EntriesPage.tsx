@@ -6,9 +6,20 @@ import {
   TrashIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
-import { useVirtualizer } from "@tanstack/react-virtual";
+import {
+  defaultRangeExtractor,
+  useVirtualizer,
+  Range,
+} from "@tanstack/react-virtual";
 import { DateTime, Duration, Interval } from "luxon";
-import { useEffect, useRef, useState, Fragment } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+  useMemo,
+  useCallback,
+} from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { useStore, TaskEntry, markEntryAsDeleted, endEntry } from "../store";
@@ -35,41 +46,68 @@ export function EntriesPage() {
     setShowBreaks(newValue);
   };
 
-  let entries: ((TaskEntry & { type: EntryType.TaskEntry }) | Daymarker)[] = [];
+  const { entries, stickyIndexes } = useMemo(() => {
+    let entries: ((TaskEntry & { type: EntryType.TaskEntry }) | Daymarker)[] =
+      [];
 
-  const sortedEntries = raw_entries.sort((a, b) => a.start - b.start);
-  // for debugging, sort entries via duration .sort((a, b) => (a.duration || 0) - (b.duration || 0));
+    const sortedEntries = [...raw_entries].sort((a, b) => a.start - b.start);
+    // for debugging, sort entries via duration .sort((a, b) => (a.duration || 0) - (b.duration || 0));
 
-  let currentEndOfDay = 0;
-  for (const entry of sortedEntries) {
-    const { deleted, is_break } = entry;
-    if ((!showDeleted && deleted) || (!showBreaks && is_break)) {
-      continue;
+    let currentEndOfDay = 0;
+    const stickyIndexes = [];
+    for (const entry of sortedEntries) {
+      const { deleted, is_break } = entry;
+      if ((!showDeleted && deleted) || (!showBreaks && is_break)) {
+        continue;
+      }
+
+      if (entry.start > currentEndOfDay) {
+        const newEndOfDay = DateTime.fromMillis(entry.start).endOf("day");
+        const index = entries.push({
+          id: `daymarker${newEndOfDay.toUTC()}`,
+          type: EntryType.Daymarker,
+          ts: newEndOfDay.toMillis(),
+        });
+        stickyIndexes.push(index - 1);
+        currentEndOfDay = newEndOfDay.toMillis();
+      }
+
+      const newEntry = entry as TaskEntry & { type: EntryType.TaskEntry };
+      newEntry.type = EntryType.TaskEntry;
+      entries.push(newEntry);
     }
 
-    if (entry.start > currentEndOfDay) {
-      const newEndOfDay = DateTime.fromMillis(entry.start).endOf("day");
-      entries.push({
-        id: `daymarker${newEndOfDay.toUTC()}`,
-        type: EntryType.Daymarker,
-        ts: newEndOfDay.toMillis(),
-      });
-      currentEndOfDay = newEndOfDay.toMillis();
-    }
-
-    const newEntry = entry as TaskEntry & { type: EntryType.TaskEntry };
-    newEntry.type = EntryType.TaskEntry;
-    entries.push(newEntry);
-  }
+    return { entries, stickyIndexes };
+  }, [raw_entries]);
 
   const parentRef = useRef<HTMLDivElement | null>(null);
+  const activeStickyIndexRef = useRef<number>(0);
+  const isSticky = (index: number) => stickyIndexes.includes(index);
+  const isActiveSticky = (index: number) =>
+    activeStickyIndexRef.current === index;
 
   const rowVirtualizer = useVirtualizer({
     count: entries.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 35,
+    estimateSize: (index) => (isSticky(index) ? 24 : 35),
     overscan: 5,
     getItemKey: (index) => entries[index].id,
+    rangeExtractor: useCallback(
+      (range: Range) => {
+        activeStickyIndexRef.current =
+          [...stickyIndexes]
+            .reverse()
+            .find((index) => range.startIndex >= index) || 0;
+
+        const next = new Set([
+          activeStickyIndexRef.current,
+          ...defaultRangeExtractor(range),
+        ]);
+
+        return [...next].sort((a, b) => a - b);
+      },
+      [stickyIndexes],
+    ),
   });
 
   // start at end of list
@@ -98,6 +136,7 @@ export function EntriesPage() {
             onChange={() => toggleShowBreaks()}
           />
         </label>
+        <hr />
       </div>
       <div
         ref={parentRef}
@@ -125,11 +164,22 @@ export function EntriesPage() {
                     : "bg-slate-200 dark:bg-slate-600"
                 }
                 style={{
-                  position: "absolute",
+                  ...(isSticky(virtualRow.index)
+                    ? {
+                        zIndex: 1,
+                      }
+                    : {}),
+                  ...(isActiveSticky(virtualRow.index)
+                    ? {
+                        position: "sticky",
+                      }
+                    : {
+                        position: "absolute",
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }),
                   top: 0,
                   left: 0,
                   width: "100%",
-                  transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
                 {entry.type === EntryType.Daymarker && (
@@ -153,7 +203,7 @@ export function EntriesPage() {
 function DayMarker({ ts }: { ts: number }) {
   const time = DateTime.fromMillis(ts);
   return (
-    <div className="m-2">
+    <div className="p-2">
       <b>{time.weekdayLong}</b> - {time.toLocaleString()}
     </div>
   );
