@@ -142,59 +142,68 @@ export function EntriesPage() {
         ref={parentRef}
         className="h-full w-full flex-grow overflow-auto overscroll-auto"
       >
-        <div
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const entry = entries[virtualRow.index];
-            return (
-              <div
-                key={virtualRow.key}
-                data-index={virtualRow.index}
-                ref={rowVirtualizer.measureElement}
-                className={
-                  entry.type === EntryType.Daymarker
-                    ? " bg-gray-300 dark:bg-gray-800"
-                    : virtualRow.index % 2
-                    ? "bg-slate-100 dark:bg-slate-500"
-                    : "bg-slate-200 dark:bg-slate-600"
-                }
-                style={{
-                  ...(isSticky(virtualRow.index)
-                    ? {
-                        zIndex: 1,
+        {entries.length === 0 && (
+          <div className="w-full h-full flex flex-col justify-center">
+            <div className="text-center">No Entries yet</div>
+          </div>
+        )}
+        {entries.length !== 0 && (
+          <div
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const entry = entries[virtualRow.index];
+              return (
+                <div
+                  key={virtualRow.key}
+                  data-index={virtualRow.index}
+                  ref={rowVirtualizer.measureElement}
+                  className={
+                    entry.type === EntryType.Daymarker
+                      ? " bg-gray-300 dark:bg-gray-800"
+                      : virtualRow.index % 2
+                      ? "bg-slate-100 dark:bg-slate-500"
+                      : "bg-slate-200 dark:bg-slate-600"
+                  }
+                  style={{
+                    ...(isSticky(virtualRow.index)
+                      ? {
+                          zIndex: 1,
+                        }
+                      : {}),
+                    ...(isActiveSticky(virtualRow.index)
+                      ? {
+                          position: "sticky",
+                        }
+                      : {
+                          position: "absolute",
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }),
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                  }}
+                >
+                  {entry.type === EntryType.Daymarker && (
+                    <DayMarker ts={entry.ts} />
+                  )}
+                  {entry.type === EntryType.TaskEntry && (
+                    <Entry
+                      entry={entry}
+                      onEdit={(id: TaskEntry["id"]) =>
+                        navigate(`/entries/${id}`)
                       }
-                    : {}),
-                  ...(isActiveSticky(virtualRow.index)
-                    ? {
-                        position: "sticky",
-                      }
-                    : {
-                        position: "absolute",
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }),
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                }}
-              >
-                {entry.type === EntryType.Daymarker && (
-                  <DayMarker ts={entry.ts} />
-                )}
-                {entry.type === EntryType.TaskEntry && (
-                  <Entry
-                    entry={entry}
-                    onEdit={(id: TaskEntry["id"]) => navigate(`/entries/${id}`)}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
