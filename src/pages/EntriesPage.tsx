@@ -140,7 +140,7 @@ export function EntriesPage() {
       </div>
       <div
         ref={parentRef}
-        className="h-full w-full flex-grow overflow-auto overscroll-auto"
+        className="h-full w-full flex-grow overflow-auto overscroll-auto entries-page-entries"
       >
         {entries.length === 0 && (
           <div className="w-full h-full flex flex-col justify-center">
