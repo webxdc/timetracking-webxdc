@@ -1,8 +1,8 @@
 # TimeTracking.xdc
 
-| Track                                                            | Entries                                                              | More                                                           |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------- |
-| ![screenshot of the track screen](./README-ASSETS/TrackPage.png) | ![screenshot of the entries screen](./README-ASSETS/EntriesPage.png) | ![screenshot of the more screen](./README-ASSETS/MorePage.png) |
+| Track                                                            | Entries                                                              | Stats                                                                 | More                                                           |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| ![screenshot of the track screen](./README-ASSETS/TrackPage.png) | ![screenshot of the entries screen](./README-ASSETS/EntriesPage.png) | ![screenshot of the statistics screen](./README-ASSETS/StatsPage.png) | ![screenshot of the more screen](./README-ASSETS/MorePage.png) |
 
 This is a simple timetracking webxdc app, it meant to be used by one user. Later there could be a fork of this app or a build flavor that supports multiple concurent users.
 
