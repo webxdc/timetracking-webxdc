@@ -8,6 +8,7 @@
 - move to react-router for routing
 - add yesterday to quickstats
 - new entries tab design
+- improved edit entry design
 
 ## 0.5.0
 
