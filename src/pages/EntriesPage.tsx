@@ -165,9 +165,10 @@ export function EntriesPage() {
                   className={
                     entry.type === EntryType.Daymarker
                       ? " bg-gray-300 dark:bg-gray-800"
-                      : virtualRow.index % 2
-                      ? "bg-slate-100 dark:bg-slate-500"
-                      : "bg-slate-200 dark:bg-slate-600"
+                      : ""
+                    //  virtualRow.index % 2
+                    // ? "bg-slate-100 dark:bg-slate-500"
+                    // : "bg-slate-200 dark:bg-slate-600"
                   }
                   style={{
                     ...(isSticky(virtualRow.index)
@@ -251,51 +252,63 @@ function Entry({
     endEntry(entry.id);
   };
   return (
-    <div
-      className={`${entry.deleted ? "bg-red-300 dark:bg-red-800" : ""} ${
-        entry.end || entry.deleted ? "" : "bg-green-300 dark:bg-green-800"
-      } p-1 flex`}
-    >
+    <div className={`p-1 flex entries-page-entry`}>
       <div className="flex flex-col mr-1" style={{ minWidth: "1.5rem" }}>
+        {!entry.end && (
+          <PlayIcon className="m-0.5 w-5 text-green-800 dark:text-green-400" />
+        )}
         {entry.is_break && <PowerIcon className="m-0.5 w-5" />}
-        {entry.deleted && <TrashIcon className="m-0.5 w-5" />}
+        {entry.deleted && <TrashIcon className="m-0.5 w-5 text-red-800" />}
         {entry.auto && <VariableIcon className="m-0.5 w-5" />}
-        {!entry.end && <PlayIcon className="m-0.5 w-5" />}
       </div>
-      <div className="flex flex-col flex-grow">
-        <div>{entry.label}</div>
+      <div className="flex flex-col flex-grow justify-between">
+        <div
+          className={`${entry.deleted ? "text-red-800 line-through" : ""} ${
+            entry.end || entry.deleted
+              ? ""
+              : "text-green-800 dark:text-green-400"
+          }`}
+        >
+          {entry.label}
+        </div>
         <div className="flex">
           {!entry.duration && (
             <button
-              className="btn m-0.5"
+              className="entries-page-entry-btn m-0.5"
               aria-label="stop entry"
               onClick={stopEntry}
             >
               <StopIcon className="mr-0.5 w-5" /> Stop
             </button>
           )}
+          <button
+            className="entries-page-entry-btn m-0.5"
+            aria-label="edit entry"
+            onClick={onEdit.bind(null, entry.id)}
+          >
+            <PencilIcon className="mr-0.5 w-5" /> Edit
+          </button>
           {!entry.deleted && (
             <button
-              className="btn m-0.5"
+              className="entries-page-entry-btn m-0.5"
               aria-label="delete entry"
               onClick={deleteEntry}
             >
               <TrashIcon className="mr-0.5 w-5" /> Delete
             </button>
           )}
-          <button
-            className="btn m-0.5"
-            aria-label="edit entry"
-            onClick={onEdit.bind(null, entry.id)}
-          >
-            <PencilIcon className="mr-0.5 w-5" /> Edit
-          </button>
         </div>
       </div>
 
-      <div className="flex flex-col items-end">
+      <div
+        className={`flex flex-col items-end ${
+          entry.deleted || entry.is_break
+            ? " text-gray-400 dark:text-gray-500"
+            : ""
+        }`}
+      >
         <div>{startTime}</div>
-        <div className="border-r-4 pr-1 border-solid border-indigo-800 dark:border-lime-500">
+        <div className="border-r-4 pr-1 border-solid border-lime-400 dark:border-lime-500">
           {duration}
           {!entry.duration && <UpdatingDurationSince startTS={entry.start} />}
         </div>

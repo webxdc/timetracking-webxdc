@@ -45,3 +45,21 @@ html {
     --color: rgb(0, 69, 198);
   }
 }
+
+.entries-page-entry {
+  border-top: 1px solid rgba(129, 129, 129, 0.207);
+}
+
+.entries-page-entry-btn {
+  @apply m-0.5 p-1 rounded
+  inline-flex items-center
+  text-gray-700 dark:text-gray-300
+  disabled:bg-gray-700 disabled:hover:bg-gray-700;
+
+  border: 1px solid rgba(129, 129, 129, 0.507);
+}
+
+.entries-page-entry-btn:hover {
+  border-color: rgba(129, 129, 129, 0.607);
+  background-color: rgba(129, 129, 129, 0.207);
+}
