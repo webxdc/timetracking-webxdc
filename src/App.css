@@ -63,3 +63,15 @@ html {
   border-color: rgba(129, 129, 129, 0.607);
   background-color: rgba(129, 129, 129, 0.207);
 }
+
+.entries-page-entries::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  border: white 1px solid;
+  min-height: 40px;
+  background-color: white;
+  opacity: 0.7;
+}
+
+.entries-page-entries::-webkit-scrollbar {
+  width: 8px;
+}
