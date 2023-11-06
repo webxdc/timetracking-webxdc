@@ -230,16 +230,13 @@ function Entry({
   const startTime = DateTime.fromMillis(entry.start).toLocaleString(
     DateTime.TIME_SIMPLE,
   );
+  const endTime = entry.end
+    ? DateTime.fromMillis(entry.end).toLocaleString(DateTime.TIME_SIMPLE)
+    : null;
 
   let duration =
     entry.duration &&
-    Duration.fromDurationLike(entry.duration)
-      .shiftTo("hours", "minutes", "seconds")
-      .toHuman({
-        maximumFractionDigits: 0,
-        listStyle: "narrow",
-        unitDisplay: "short",
-      });
+    durationToHumanShort(Duration.fromDurationLike(entry.duration));
 
   const reallyDeleteEntry = () => {
     setShowDeleteConfirm(false);
@@ -257,34 +254,54 @@ function Entry({
     <div
       className={`${entry.deleted ? "bg-red-300 dark:bg-red-800" : ""} ${
         entry.end || entry.deleted ? "" : "bg-green-300 dark:bg-green-800"
-      } p-1`}
+      } p-1 flex`}
     >
-      {entry.is_break && <PowerIcon className="mr-0.5 w-5" />}
-      {entry.deleted && <TrashIcon className="mr-0.5 w-5" />}
-      {entry.auto && <VariableIcon className="mr-0.5 w-5" />}
-      {!entry.end && <PlayIcon className="mr-0.5 w-5" />}
-      {startTime} {entry.label}
-      <div>
-        {duration}
-        {!entry.duration && <UpdatingDurationSince startTS={entry.start} />}
+      <div className="flex flex-col mr-1" style={{ minWidth: "1.5rem" }}>
+        {entry.is_break && <PowerIcon className="m-0.5 w-5" />}
+        {entry.deleted && <TrashIcon className="m-0.5 w-5" />}
+        {entry.auto && <VariableIcon className="m-0.5 w-5" />}
+        {!entry.end && <PlayIcon className="m-0.5 w-5" />}
       </div>
-      {!entry.duration && (
-        <button className="btn" aria-label="stop entry" onClick={stopEntry}>
-          <StopIcon className="mr-0.5 w-5" />
-        </button>
-      )}
-      {!entry.deleted && (
-        <button className="btn" aria-label="delete entry" onClick={deleteEntry}>
-          <TrashIcon className="mr-0.5 w-5" />
-        </button>
-      )}
-      <button
-        className="btn"
-        aria-label="edit entry"
-        onClick={onEdit.bind(null, entry.id)}
-      >
-        <PencilIcon className="mr-0.5 w-5" />
-      </button>
+      <div className="flex flex-col flex-grow">
+        <div>{entry.label}</div>
+        <div className="flex">
+          {!entry.duration && (
+            <button
+              className="btn m-0.5"
+              aria-label="stop entry"
+              onClick={stopEntry}
+            >
+              <StopIcon className="mr-0.5 w-5" /> Stop
+            </button>
+          )}
+          {!entry.deleted && (
+            <button
+              className="btn m-0.5"
+              aria-label="delete entry"
+              onClick={deleteEntry}
+            >
+              <TrashIcon className="mr-0.5 w-5" /> Delete
+            </button>
+          )}
+          <button
+            className="btn m-0.5"
+            aria-label="edit entry"
+            onClick={onEdit.bind(null, entry.id)}
+          >
+            <PencilIcon className="mr-0.5 w-5" /> Edit
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-end">
+        <div>{startTime}</div>
+        <div className="border-r-4 pr-1 border-solid border-indigo-800 dark:border-lime-500">
+          {duration}
+          {!entry.duration && <UpdatingDurationSince startTS={entry.start} />}
+        </div>
+        <div>{endTime || "..."}</div>
+      </div>
+
       <Transition appear show={showDeleteConfirmation} as={Fragment}>
         <Dialog
           as="div"
@@ -376,15 +393,8 @@ function UpdatingDurationSince({ startTS }: { startTS: number }) {
   useEffect(() => {
     const start = DateTime.fromMillis(startTS);
     const update = () => {
-      let duration = Interval.fromDateTimes(start, DateTime.now())
-        .toDuration()
-        .shiftTo("hours", "minutes", "seconds")
-        .toHuman({
-          maximumFractionDigits: 0,
-          listStyle: "narrow",
-          unitDisplay: "short",
-        });
-      setText(duration);
+      let duration = Interval.fromDateTimes(start, DateTime.now()).toDuration();
+      setText(durationToHumanShort(duration));
     };
     update();
     const interval = setInterval(update, 1000);
@@ -396,4 +406,28 @@ function UpdatingDurationSince({ startTS }: { startTS: number }) {
 
 export function EntryModal({ entry }: any) {
   return <div>Entry: {JSON.stringify(entry)}</div>;
+}
+
+function durationToHumanShort(duration: Duration) {
+  const { hours, minutes, seconds } = duration.shiftTo(
+    "hours",
+    "minutes",
+    "seconds",
+  );
+
+  let result = "";
+
+  if (hours) {
+    result += `${hours} h `;
+  }
+
+  if (minutes) {
+    result += `${minutes} min `;
+  }
+
+  if (seconds && !hours && !minutes) {
+    result += `${Math.floor(seconds)}s`;
+  }
+
+  return result;
 }
