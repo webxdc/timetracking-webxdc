@@ -2,6 +2,7 @@ import { DateTime, Duration } from "luxon";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { AlertDialog } from "../components/AlertDialog";
 import { editEntry, markEntryAsDeleted, TaskEntry, useStore } from "../store";
 
 const dateTimeToInputDateString = (time: DateTime) => {
@@ -140,69 +141,81 @@ function EntryEditForm({
     return unsubscribe;
   }, [entry.duration, entry.start, entry.end]);
 
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const onSubmit: SubmitHandler<FormValues> = (newValues) => {
-    if (!entry) {
-      throw new Error("entry is undefined, this should not happen");
-    }
-    const updated_properties: Parameters<typeof editEntry>[1] = {};
-    if (entry.label !== newValues.label) {
-      updated_properties.new_label = newValues.label;
-    }
-    if (entry.is_break !== newValues.isBreak) {
-      updated_properties.new_is_break = newValues.isBreak
-        ? true
-        : typeof entry.is_break !== "undefined"
-        ? false
-        : undefined;
-    }
-    if (newValues.start) {
-      if (
-        dateTimeToInputDateString(DateTime.fromMillis(entry.start)) !=
-        newValues.start
-      ) {
-        const converted_start: DateTime = inputDateStringToDateTime(
-          newValues.start,
-        );
-        updated_properties.new_start = converted_start.toMillis();
+    try {
+      if (!entry) {
+        throw new Error("entry is undefined, this should not happen");
       }
-    }
-    if (newValues.end) {
-      if (
-        dateTimeToInputDateString(DateTime.fromMillis(entry.end || 0)) !=
-        newValues.end
-      ) {
-        const converted_end: DateTime = inputDateStringToDateTime(
-          newValues.end,
-        );
-        updated_properties.new_end = converted_end.toMillis();
+      const updated_properties: Parameters<typeof editEntry>[1] = {};
+      if (entry.label !== newValues.label) {
+        updated_properties.new_label = newValues.label;
       }
-    }
+      if (entry.is_break !== newValues.isBreak) {
+        updated_properties.new_is_break = newValues.isBreak
+          ? true
+          : typeof entry.is_break !== "undefined"
+          ? false
+          : undefined;
+      }
+      if (newValues.start) {
+        if (
+          dateTimeToInputDateString(DateTime.fromMillis(entry.start)) !=
+          newValues.start
+        ) {
+          const converted_start: DateTime = inputDateStringToDateTime(
+            newValues.start,
+          );
+          updated_properties.new_start = converted_start.toMillis();
+        }
+      }
+      if (newValues.end) {
+        if (
+          dateTimeToInputDateString(DateTime.fromMillis(entry.end || 0)) !=
+          newValues.end
+        ) {
+          const converted_end: DateTime = inputDateStringToDateTime(
+            newValues.end,
+          );
+          updated_properties.new_end = converted_end.toMillis();
+        }
+      }
 
-    if (entry.end || newValues.end) {
-      // todo check that duration is over 1 and not negative
-      const start = DateTime.fromMillis(
-        updated_properties.new_start || entry.start,
-      );
-      const end = DateTime.fromMillis(
-        updated_properties.new_end || (entry.end as number),
-      );
-      const duration = end.diff(start);
-      if (duration.toMillis() < 1000) {
-        console.log("error: duration is negative or smaller than one second", {
-          start,
-          end,
-          duration,
-        });
-        throw new Error(
-          "error: duration is negative or smaller than one second",
+      if (entry.end || newValues.end) {
+        // todo check that duration is over 1 and not negative
+        const start = DateTime.fromMillis(
+          updated_properties.new_start || entry.start,
         );
-        // todo show error to user (maybe form has fancy validation errors?)
+        const end = DateTime.fromMillis(
+          updated_properties.new_end || (entry.end as number),
+        );
+        const duration = end.diff(start);
+        if (duration.toMillis() < 1000) {
+          console.log(
+            "error: duration is negative or smaller than one second",
+            {
+              start,
+              end,
+              duration,
+            },
+          );
+          throw new Error(
+            "error: duration is negative or smaller than one second",
+          );
+          // todo show error to user (maybe form has fancy validation errors?)
+        }
       }
-    }
-    if (Object.keys(updated_properties).length !== 0) {
-      editEntry(entry.id, updated_properties).then(onSubmitDone);
+      if (Object.keys(updated_properties).length !== 0) {
+        editEntry(entry.id, updated_properties).then(onSubmitDone);
 
-      // selectEntry.bind(null, null) // go back to overview
+        // selectEntry.bind(null, null) // go back to overview
+      }
+    } catch (error: any) {
+      if (error) {
+        setSubmitError(error.message);
+      }
+      throw error;
     }
   };
 
@@ -288,6 +301,13 @@ function EntryEditForm({
       <button className="btn" disabled={!isDirty} role="submit">
         Save Changes
       </button>
+      {submitError && (
+        <AlertDialog
+          onClose={() => setSubmitError(null)}
+          title={"Error editing entry"}
+          message={submitError}
+        />
+      )}
     </form>
   );
 }
