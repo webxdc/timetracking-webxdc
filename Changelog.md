@@ -9,6 +9,7 @@
 - add yesterday to quickstats
 - new entries tab design
 - improved edit entry design
+- show edit entry errors to user
 
 ## 0.5.0
 
