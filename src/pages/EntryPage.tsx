@@ -206,26 +206,60 @@ function EntryEditForm({
     }
   };
 
+  const registerLabel = register("label");
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label className={dirtyFields.label ? "bg-orange-300" : ""}>
-        Label:
-        <input type="text" {...register("label")} />
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+      <div className="flex items-center">
+        <div
+          className={`edit-entry-dirty ${
+            dirtyFields.label ? "visible" : "invisible"
+          }`}
+        />
+        <label className={`pr-2`} htmlFor={registerLabel.name}>
+          Label
+        </label>
+        <input
+          type="text"
+          {...registerLabel}
+          className="input input-bordered grow"
+        />
+      </div>
+      <br />
+      <label className={`flex items-center`}>
+        <div
+          className={`edit-entry-dirty ${
+            dirtyFields.start ? "visible" : "invisible"
+          }`}
+        />
+        <div className="pr-2">Start</div>
+        <input
+          type="datetime-local"
+          {...register("start")}
+          className="input input-bordered max-w-xs"
+        />
       </label>
       <br />
-      <label className={`${dirtyFields.start ? "bg-orange-300" : ""}`}>
-        Start: <input type="datetime-local" {...register("start")} />
-      </label>
-      <br />
-      <label className={`${dirtyFields.end ? "bg-orange-300" : ""}`}>
-        End: <input type="datetime-local" {...register("end")} />
+      <label className={`flex items-center`}>
+        <div
+          className={`edit-entry-dirty ${
+            dirtyFields.end ? "visible" : "invisible"
+          }`}
+        />
+        <div className="pr-2">End</div>
+        <input
+          type="datetime-local"
+          {...register("end")}
+          className="input input-bordered max-w-xs"
+        />
       </label>
       {duration && (
-        <div
-          className={`${
-            dirtyFields.start || dirtyFields.end ? "bg-orange-300" : ""
-          }`}
-        >
+        <div className={`flex items-center`}>
+          <div
+            className={`edit-entry-dirty ${
+              dirtyFields.start || dirtyFields.end ? "visible" : "invisible"
+            }`}
+          />
           Duration:{" "}
           {duration.shiftTo("hours", "minutes", "seconds").toHuman({
             maximumFractionDigits: 0,
@@ -234,11 +268,12 @@ function EntryEditForm({
           })}
         </div>
       )}
-      <label
-        className={`flex items-center ${
-          dirtyFields.isBreak ? "bg-orange-300" : ""
-        }`}
-      >
+      <label className={`flex items-center`}>
+        <div
+          className={`edit-entry-dirty ${
+            dirtyFields.isBreak ? "visible" : "invisible"
+          }`}
+        />
         <div className="grow pr-2">Break (not counted)</div>
         <input type="checkbox" {...register("isBreak")} />
       </label>

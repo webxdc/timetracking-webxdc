@@ -75,3 +75,7 @@ html {
 .entries-page-entries::-webkit-scrollbar {
   width: 8px;
 }
+
+.edit-entry-dirty {
+  @apply border-r-4 border-orange-300 border-solid h-12 mr-2;
+}
