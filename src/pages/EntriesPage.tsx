@@ -78,7 +78,7 @@ export function EntriesPage() {
     }
 
     return { entries, stickyIndexes };
-  }, [raw_entries]);
+  }, [raw_entries, showDeleted, showBreaks]);
 
   const parentRef = useRef<HTMLDivElement | null>(null);
   const activeStickyIndexRef = useRef<number>(0);
