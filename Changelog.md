@@ -7,6 +7,7 @@
 - add "Time spend by task" to Statistics
 - move to react-router for routing
 - add yesterday to quickstats
+- new entries tab design
 
 ## 0.5.0
 
