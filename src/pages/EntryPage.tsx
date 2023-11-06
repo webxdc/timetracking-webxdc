@@ -34,8 +34,8 @@ export function EntryPage() {
   const [formKey, setFormKey] = useState(0);
 
   return (
-    <div className="absolute top-0 flex h-full w-full flex-col bg-slate-100">
-      <div className="flex items-center bg-slate-200 py-2">
+    <div className="absolute top-0 flex h-full w-full flex-col">
+      <div className="flex items-center py-2">
         <button className="btn" onClick={() => navigate(-1)}>
           Back
         </button>
@@ -70,8 +70,10 @@ export function EntryPage() {
           <ul>
             {history.map((historyItem) => (
               <li>
-                {historyItem.when} {/* todo relative Time? */}[{historyItem.who}
-                ]: {historyItem.what}
+                {DateTime.fromMillis(historyItem.when).toLocaleString(
+                  DateTime.DATETIME_SHORT,
+                )}{" "}
+                [{historyItem.who}]: {historyItem.what}
               </li>
             ))}
           </ul>
