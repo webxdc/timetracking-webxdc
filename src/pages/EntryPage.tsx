@@ -106,7 +106,7 @@ function EntryEditForm({
     watch,
     register,
     handleSubmit,
-    formState: { isDirty, dirtyFields },
+    formState: { isDirty, dirtyFields, errors },
     reset,
   } = useForm<FormValues>({
     defaultValues: {
@@ -223,8 +223,10 @@ function EntryEditForm({
           type="text"
           {...registerLabel}
           className="input input-bordered grow"
+          minLength={2}
         />
       </div>
+      <p className="text-red-600">{errors.label?.message}</p>
       <br />
       <label className={`flex items-center`}>
         <div
@@ -239,6 +241,7 @@ function EntryEditForm({
           className="input input-bordered max-w-xs"
         />
       </label>
+      <p className="text-red-600">{errors.start?.message}</p>
       <br />
       <label className={`flex items-center`}>
         <div
@@ -253,6 +256,8 @@ function EntryEditForm({
           className="input input-bordered max-w-xs"
         />
       </label>
+      <p className="text-red-600">{errors.end?.message}</p>
+      <br />
       {duration && (
         <div className={`flex items-center`}>
           <div
@@ -268,6 +273,7 @@ function EntryEditForm({
           })}
         </div>
       )}
+      <br />
       <label className={`flex items-center`}>
         <div
           className={`edit-entry-dirty ${
@@ -277,6 +283,8 @@ function EntryEditForm({
         <div className="grow pr-2">Break (not counted)</div>
         <input type="checkbox" {...register("isBreak")} />
       </label>
+      <p className="text-red-600">{errors.isBreak?.message}</p>
+      <p className="text-red-600">{errors.root?.message}</p>
       <button className="btn" disabled={!isDirty} role="submit">
         Save Changes
       </button>
