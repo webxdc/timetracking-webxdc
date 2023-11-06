@@ -35,19 +35,22 @@ export function EntryPage() {
 
   return (
     <div className="absolute top-0 flex h-full w-full flex-col">
-      <div className="flex items-center py-2">
-        <button className="btn" onClick={() => navigate(-1)}>
-          Back
+      <div className="flex items-center py-1">
+        <button
+          className="p-2 text-start shrink-0"
+          onClick={() => navigate(-1)}
+        >
+          &lt; Back
         </button>
         <h1
           className={`grow pl-3 text-xl font-bold ${
             entry.deleted ? "text-red-700 line-through" : ""
-          }`}
+          } whitespace-nowrap text-ellipsis overflow-hidden`}
         >
           {entry.label}
         </h1>
         <button
-          className="btn text-red-600"
+          className="px-2 text-red-600 hover:text-red-800"
           onClick={() => {
             markEntryAsDeleted(entry.id);
           }}
@@ -56,6 +59,8 @@ export function EntryPage() {
           Delete
         </button>
       </div>
+      <hr />
+
       <div className="relative m-2 flex flex-grow flex-col overflow-y-scroll">
         <EntryEditForm
           entry={entry}
