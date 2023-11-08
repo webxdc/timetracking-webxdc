@@ -89,7 +89,7 @@ export function EntriesPage() {
   const rowVirtualizer = useVirtualizer({
     count: entries.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: (index) => (isSticky(index) ? 24 : 35),
+    estimateSize: (index) => (isSticky(index) ? 40 : 81),
     overscan: 5,
     getItemKey: (index) => entries[index].id,
     rangeExtractor: useCallback(

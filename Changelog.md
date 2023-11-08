@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix scrolling stuttering bug on iOS
+
 ## 0.6.0
 
 - fix typo in "why is my month missing" dialog
