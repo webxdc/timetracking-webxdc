@@ -79,3 +79,19 @@ html {
 .edit-entry-dirty {
   @apply border-r-4 border-orange-300 border-solid h-12 mr-2;
 }
+
+.entries-menu {
+  @apply max-w-md transform overflow-hidden rounded bg-white dark:bg-slate-700 text-left align-middle shadow-xl transition-all;
+}
+
+.entries-menu button {
+  @apply flex px-2 py-1.5 w-full;
+}
+
+.entries-menu button:hover {
+  background-color: rgba(129, 129, 129, 0.3);
+}
+
+.entries-menu button .icon {
+  @apply m-0.5 w-5;
+}

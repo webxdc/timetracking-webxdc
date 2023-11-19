@@ -5,6 +5,10 @@ import {
   StopIcon,
   TrashIcon,
   VariableIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  PlusIcon,
+  EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import {
   defaultRangeExtractor,
@@ -117,25 +121,90 @@ export function EntriesPage() {
     }
   }, []);
 
+  const [contextMenuShown, setContextMenuShown] = useState(false);
+
   return (
     <div className="flex h-full w-full flex-col">
       <div>
-        <label className="label cursor-pointer">
-          <span className="label-text">Show deleted</span>
-          <input
-            type="checkbox"
-            checked={showDeleted}
-            onChange={() => setShowDeleted(!showDeleted)}
-          />
-        </label>
-        <label className="label cursor-pointer">
-          <span className="label-text">Show breaks</span>
-          <input
-            type="checkbox"
-            checked={showBreaks}
-            onChange={() => toggleShowBreaks()}
-          />
-        </label>
+        <div className="flex py-1">
+          <h1
+            className={`grow pl-3 text-xl font-bold whitespace-nowrap text-ellipsis overflow-hidden`}
+          >
+            Entries
+          </h1>
+          <button aria-label="menu" onClick={() => setContextMenuShown(true)}>
+            <EllipsisVerticalIcon className="m-0.5 w-5" />
+          </button>
+        </div>
+        <Transition appear show={contextMenuShown} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={() => setContextMenuShown(false)}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-20" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-start justify-end p-2 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="entries-menu">
+                    <div className="flex flex-col items-start">
+                      <button
+                        onClick={() => {
+                          setShowDeleted(!showDeleted);
+                          setContextMenuShown(false);
+                        }}
+                      >
+                        {showDeleted ? (
+                          <EyeSlashIcon className="icon" />
+                        ) : (
+                          <EyeIcon className="icon" />
+                        )}
+                        {showDeleted ? "Hide Deleted" : "Show Deleted"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          toggleShowBreaks();
+                          setContextMenuShown(false);
+                        }}
+                      >
+                        {showBreaks ? (
+                          <EyeSlashIcon className="icon" />
+                        ) : (
+                          <EyeIcon className="icon" />
+                        )}
+
+                        {showBreaks ? "Hide Breaks" : "Show Breaks"}
+                      </button>
+                      <button>
+                        <PlusIcon className="icon" />
+                        Manually Create Entry
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
         <hr />
       </div>
       <div
