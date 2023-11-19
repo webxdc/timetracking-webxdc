@@ -11,6 +11,7 @@ const enum UpdateActionType {
   EndEntryType = "EE",
   EditEntryType = "ME", // modify entry
   DeleteEntryType = "DEL",
+  CreateEntryType = "CE",
   ImportType = "I",
 }
 
@@ -39,6 +40,14 @@ type EditEntry = {
   new_label?: string;
   new_is_break?: boolean;
 };
+type CreateEntry = {
+  type: UpdateActionType.CreateEntryType;
+  id: string;
+  start: number;
+  end: number;
+  label: string;
+  is_break: boolean;
+};
 
 /** marks entry as deleted, don't really delete it as we still want to show it in the history */
 type DeleteEntry = {
@@ -57,6 +66,7 @@ type StatusUpdateAction =
   | EndEntry
   | EditEntry
   | DeleteEntry
+  | CreateEntry
   | ImportData;
 
 export type StatusUpdate = {
@@ -406,6 +416,43 @@ export const useStore = create<Store>((set, get) => ({
           actionHistory: [...store.actionHistory, historyEntry],
         };
       });
+    } else if (action.type === UpdateActionType.CreateEntryType) {
+      if (get().entries.findIndex(({ id }) => id === action.id) !== -1) {
+        console.warn(
+          "Ignoring creating event with an id that already exists: ",
+          action.id,
+        );
+        return;
+      }
+      const { id, label, start, end, is_break } = action;
+      const newEntry: TaskEntry = {
+        id,
+        label,
+        start,
+        end,
+        is_break,
+        duration: end - start,
+      };
+      const historyEntry: ActionHistoryEntry = {
+        id,
+        who: update.user,
+        what: `created Entry`,
+        when: update.action_ts,
+      };
+      set((store) => {
+        let label_usage_count = (store.labels[label]?.usage_count || 0) + 1;
+        return {
+          entries: [...store.entries, newEntry],
+          actionHistory: [...store.actionHistory, historyEntry],
+          labels: {
+            ...store.labels,
+            [label]: {
+              usage_count: label_usage_count,
+              last_used: start,
+            } as LabelData,
+          },
+        };
+      });
     }
   },
   getOpenEntries(): TaskEntry[] {
@@ -702,5 +749,35 @@ export function importEntries(entries: TaskEntry[]) {
       }),
     },
     `Import of ${entries.length} entries`,
+  );
+}
+
+export function createEntry(
+  label: string,
+  start: number,
+  end: number,
+  is_break: boolean,
+) {
+  if (label.length < 1) {
+    throw new Error("Label is to short");
+  }
+
+  const ts = Date.now();
+  const id = `${window.webxdc.selfAddr}:${start}:${ts}`;
+
+  window.webxdc.sendUpdate(
+    {
+      payload: makeUpdate({
+        type: UpdateActionType.CreateEntryType,
+        id,
+        label,
+        start,
+        end,
+        is_break,
+      }),
+    },
+    `Timetracking entry ${id} manually created: '${label}' ${new Date(
+      ts,
+    ).toLocaleString()}`,
   );
 }

@@ -194,7 +194,7 @@ export function EntriesPage() {
 
                         {showBreaks ? "Hide Breaks" : "Show Breaks"}
                       </button>
-                      <button>
+                      <button onClick={() => navigate("/entries/create")}>
                         <PlusIcon className="icon" />
                         Manually Create Entry
                       </button>

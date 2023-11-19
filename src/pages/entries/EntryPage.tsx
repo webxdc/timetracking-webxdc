@@ -2,9 +2,14 @@ import { DateTime, Duration } from "luxon";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { AlertDialog } from "../components/AlertDialog";
-import { ConfirmDialog } from "../components/ConfirmDialog";
-import { editEntry, markEntryAsDeleted, TaskEntry, useStore } from "../store";
+import { AlertDialog } from "../../components/AlertDialog";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import {
+  editEntry,
+  markEntryAsDeleted,
+  TaskEntry,
+  useStore,
+} from "../../store";
 
 const dateTimeToInputDateString = (time: DateTime) => {
   return `${time.toFormat("yyyy-MM-dd")}T${time.toFormat("T")}`;
@@ -195,7 +200,7 @@ function EntryEditForm({
       }
 
       if (entry.end || newValues.end) {
-        // todo check that duration is over 1 and not negative
+        // check that duration is over 1 and not negative
         const start = DateTime.fromMillis(
           updated_properties.new_start || entry.start,
         );
@@ -215,7 +220,6 @@ function EntryEditForm({
           throw new Error(
             "error: duration is negative or smaller than one second",
           );
-          // todo show error to user (maybe form has fancy validation errors?)
         }
       }
       if (Object.keys(updated_properties).length !== 0) {
