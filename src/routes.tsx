@@ -2,7 +2,7 @@ import { createHashRouter, useRouteError } from "react-router-dom";
 import App from "./App";
 import { DebugPage } from "./pages/DebugPage";
 import { EntriesPage } from "./pages/EntriesPage";
-import { EntryPage } from "./pages/EntryPage";
+import { EntryPage } from "./pages/entries/EntryPage";
 import { AboutPage } from "./pages/more/AboutPage";
 import { BackupPage } from "./pages/more/BackupPage";
 import { CreditsPage } from "./pages/more/CreditsPage";
@@ -12,6 +12,7 @@ import { StatisticsPage } from "./pages/StatisticsPage";
 import { DaysInMonthsPage } from "./pages/stats/DaysInMonthsPage";
 import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
 import { TrackPage } from "./pages/TrackPage";
+import { CreateEntryPage } from "./pages/entries/CreateEntryPage";
 
 export const router = createHashRouter([
   {
@@ -27,6 +28,10 @@ export const router = createHashRouter([
       {
         path: "entries",
         element: <EntriesPage />,
+      },
+      {
+        path: "entries/create",
+        element: <CreateEntryPage />,
       },
       {
         path: "entries/:id",
