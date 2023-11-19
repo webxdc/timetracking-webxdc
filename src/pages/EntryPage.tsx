@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { AlertDialog } from "../components/AlertDialog";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { editEntry, markEntryAsDeleted, TaskEntry, useStore } from "../store";
 
 const dateTimeToInputDateString = (time: DateTime) => {
@@ -33,6 +34,7 @@ export function EntryPage() {
   }
 
   const [formKey, setFormKey] = useState(0);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   return (
     <div className="absolute top-0 flex h-full w-full flex-col">
@@ -52,9 +54,7 @@ export function EntryPage() {
         </h1>
         <button
           className="px-2 text-red-600 hover:text-red-800"
-          onClick={() => {
-            markEntryAsDeleted(entry.id);
-          }}
+          onClick={setShowDeleteConfirmation.bind(null, true)}
           disabled={entry.deleted}
         >
           Delete
@@ -85,6 +85,18 @@ export function EntryPage() {
           </ul>
         </div>
       </div>
+      {showDeleteConfirmation && (
+        <ConfirmDialog
+          onAnswer={(confirmed) => {
+            if (confirmed) {
+              markEntryAsDeleted(entry.id);
+            }
+            setShowDeleteConfirmation(false);
+          }}
+          title={"Delete Entry?"}
+          message={`Are you sure you want to delete this entry? You can not undo this, yet.`}
+        />
+      )}
     </div>
   );
 }
