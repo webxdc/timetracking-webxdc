@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0
+
 - fix scrolling stuttering bug on iOS
 - add confirmation dialog when deleting entry from entry page
 - tidy up entries page (put view options in menu in header)
