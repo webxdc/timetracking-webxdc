@@ -24,8 +24,10 @@ export function WeekView({
   const entries = useStore((store) => store.getTrackedEntries());
 
   const [timeSpan] = useState([
-    DateTime.fromObject({ weekNumber: week_number }).startOf("day").toMillis(),
-    DateTime.fromObject({ weekNumber: week_number })
+    DateTime.fromObject({ weekYear: year, weekNumber: week_number })
+      .startOf("day")
+      .toMillis(),
+    DateTime.fromObject({ weekYear: year, weekNumber: week_number })
       .plus(Duration.fromObject({ week: 1 }))
       .endOf("day")
       .toMillis(),

@@ -4,6 +4,7 @@
 
 - small style fixes for stats view on small screens
 - add autocomplete support in create and edit entry page
+- fix month and week stats at year border (from other years than the current one) #50
 
 ## 0.7.0
 
