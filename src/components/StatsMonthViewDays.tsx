@@ -18,8 +18,8 @@ export function MonthView({ year, month }: { year: number; month: number }) {
   const entries = useStore((store) => store.getTrackedEntries());
 
   const [timeSpan] = useState([
-    DateTime.fromObject({ month }).startOf("day").toMillis(),
-    DateTime.fromObject({ month })
+    DateTime.fromObject({ year, month }).startOf("day").toMillis(),
+    DateTime.fromObject({ year, month })
       .plus(Duration.fromObject({ month: 1 }))
       .endOf("day")
       .toMillis(),
