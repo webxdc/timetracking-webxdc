@@ -16,14 +16,15 @@ html {
   .self-center,
   .self-center .stats {
     width: 100%;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    border-radius: 0;
   }
   .self-center .stats .stat {
-    padding: 0.6rem 0.5rem;
+    padding: 0.6rem 0.3rem;
   }
 
   .self-center .stats .stat .stat-value {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 700;
   }
 

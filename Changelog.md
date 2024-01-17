@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- small style fixes for stats view on small screens
+
 ## 0.7.0
 
 - fix scrolling stuttering bug on iOS
