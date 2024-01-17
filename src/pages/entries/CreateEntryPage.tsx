@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { AlertDialog } from "../../components/AlertDialog";
-import { createEntry } from "../../store";
+import { createEntry, useStore } from "../../store";
 
 const inputDateStringToDateTime = (datetime_string: string) => {
   const [dateString, timeString] = datetime_string.split("T");
@@ -104,6 +104,9 @@ export function CreateEntryPage() {
     }
   };
 
+  const quick_tasks = useStore.getState().getSortedUniqueLabels();
+  const auto_complete = localStorage.getItem("autocomplete_enabled") === "true";
+
   const registerLabel = register("label", { required: true });
 
   return (
@@ -132,7 +135,15 @@ export function CreateEntryPage() {
             {...registerLabel}
             className="input input-bordered grow"
             minLength={2}
+            list={auto_complete ? "quick-tasks-create-entry" : undefined}
           />
+          {auto_complete && (
+            <datalist id="quick-tasks-create-entry">
+              {quick_tasks.map(({ label }) => (
+                <option key={label}>{label}</option>
+              ))}
+            </datalist>
+          )}
         </div>
         <p className="text-red-600">{errors.label?.message}</p>
         <br />
