@@ -235,6 +235,9 @@ function EntryEditForm({
     }
   };
 
+  const quick_tasks = useStore.getState().getSortedUniqueLabels();
+  const auto_complete = localStorage.getItem("autocomplete_enabled") === "true";
+
   const registerLabel = register("label");
 
   return (
@@ -253,7 +256,15 @@ function EntryEditForm({
           {...registerLabel}
           className="input input-bordered grow"
           minLength={2}
+          list={auto_complete ? "quick-tasks-edit-entry" : undefined}
         />
+        {auto_complete && (
+          <datalist id="quick-tasks-edit-entry">
+            {quick_tasks.map(({ label }) => (
+              <option key={label}>{label}</option>
+            ))}
+          </datalist>
+        )}
       </div>
       <p className="text-red-600">{errors.label?.message}</p>
       <br />

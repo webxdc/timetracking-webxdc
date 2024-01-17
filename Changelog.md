@@ -3,6 +3,7 @@
 ## Unreleased
 
 - small style fixes for stats view on small screens
+- add autocomplete support in create and edit entry page
 
 ## 0.7.0
 
