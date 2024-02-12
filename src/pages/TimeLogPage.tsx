@@ -5,11 +5,18 @@ import {
   StopIcon,
 } from "@heroicons/react/24/outline";
 
-import { FormEvent, MouseEventHandler, useRef, useState } from "react";
+import { SyntheticEvent, useRef, useState } from "react";
 import FailedToEndDialog from "../components/FailedToEndDialog";
 import { QuickStats } from "../components/TrackPageStats";
 import UpdatingDurationSince from "../components/UpdatingDurationSince";
-import { endEntry, startEntry, TaskEntry, useStore } from "../store";
+import {
+  editEntry,
+  endEntry,
+  markEntryAsDeleted,
+  startEntry,
+  TaskEntry,
+  useStore,
+} from "../store";
 
 function OpenTask({
   entry,
@@ -44,8 +51,6 @@ function OpenTask({
   );
 }
 
-type Range = [start: number, end: number | undefined];
-
 export function TimeLogPage() {
   const [last_open_entry, ...other_open_entries] = useStore((state) =>
     state.getOpenEntries(),
@@ -70,32 +75,42 @@ export function TimeLogPage() {
 
   const quick_tasks = useStore.getState().getSortedUniqueLabels();
 
-  const deleteCurrentEntry: MouseEventHandler<HTMLButtonElement> = (ev) => {
+  const deleteCurrentEntry = (ev: SyntheticEvent) => {
     ev.preventDefault();
-    // TODO
+    if (last_open_entry) {
+      markEntryAsDeleted(last_open_entry.id);
+    }
   };
 
-  const markCurrentEntryAsBreak: MouseEventHandler<HTMLButtonElement> = (
-    ev,
-  ) => {
+  const markCurrentEntryAsBreak = (ev: SyntheticEvent) => {
     ev.preventDefault();
-    // TODO
+    if (last_open_entry) {
+      endEntry(last_open_entry.id, Date.now(), false, true);
+      editEntry(last_open_entry.id, {
+        new_label: labelRef.current?.value || "Break",
+      });
+      if (labelRef.current) {
+        labelRef.current.value = "";
+      }
+    }
+    start(ev);
   };
 
-  const start: MouseEventHandler<HTMLButtonElement> = (ev) => {
+  const start = (ev: SyntheticEvent) => {
     ev.preventDefault();
-    // TODO
     startEntry("Unlabeled Task (timelog mode)");
   };
 
-  const labelCurrentEntry = (ev: MouseEvent | FormEvent) => {
+  const labelCurrentEntry = (ev: SyntheticEvent) => {
     ev.preventDefault();
 
     const label = labelRef.current?.value;
-    if (label) {
-      // TODO
+    if (label && last_open_entry) {
+      endEntry(last_open_entry.id, Date.now());
+      editEntry(last_open_entry.id, { new_label: label });
       labelRef.current.value = "";
     }
+    start(ev);
   };
 
   return (
@@ -105,7 +120,12 @@ export function TimeLogPage() {
           <QuickStats />
         </div>
       )}
-      <div className="flex grow flex-col overflow-hidden"></div>
+      <div className="flex grow flex-col overflow-hidden">
+        TODO show list of last 5-10 entries here from entries tab, but without
+        buttons different design? that takes less vertical space (you can edit
+        entries in the entries tab) <br />
+        why? because this give some more ui feedback when completing an entry
+      </div>
 
       <div
         style={
@@ -125,7 +145,10 @@ export function TimeLogPage() {
       </div>
       <div className="flex space-x-1.5 bg-slate-400 p-2">
         {last_open_entry ? (
-          <form onSubmit={labelCurrentEntry} className="flex flex-col grow">
+          <form
+            onSubmit={(ev) => labelCurrentEntry(ev)}
+            className="flex flex-col grow"
+          >
             <div className="flex grow items-baseline">
               <input
                 list={auto_complete ? "quick-tasks" : undefined}
@@ -153,14 +176,23 @@ export function TimeLogPage() {
               )}
             </div>
             <div className="flex text-black justify-evenly mt-2">
-              <button className="btn btn-error" onClick={deleteCurrentEntry}>
+              {/** TODO (Later?): Failed to end button for current entry */}
+              <button
+                className="btn btn-error"
+                onClick={deleteCurrentEntry}
+                type="button"
+              >
                 Stop &amp; Delete Entry
               </button>
-              <button className="btn" onClick={markCurrentEntryAsBreak}>
+              <button
+                className="btn"
+                onClick={markCurrentEntryAsBreak}
+                type="button"
+              >
                 Mark as Break
                 <PauseCircleIcon className="w-5" />
               </button>
-              <button className="btn btn-success" formAction="submit">
+              <button className="btn btn-success" type="submit">
                 Log Task
                 <PaperAirplaneIcon className="w-5" />
               </button>
