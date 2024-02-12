@@ -1,8 +1,11 @@
 import { Dialog } from "@headlessui/react";
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
-import { DateTime, Duration, Interval } from "luxon";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { DateTime, Duration } from "luxon";
+import { FormEventHandler, useRef, useState } from "react";
 import { QuickStats } from "../components/TrackPageStats";
+import UpdatingDurationSince, {
+  FormatedDuration,
+} from "../components/UpdatingDurationSince";
 import {
   endEntry,
   markEntryAsDeleted,
@@ -10,6 +13,7 @@ import {
   TaskEntry,
   useStore,
 } from "../store";
+import { dateTimeToInputMinMax } from "../util";
 
 function QuickStartTask({
   label,
@@ -291,36 +295,6 @@ export function TrackPage() {
   );
 }
 
-function UpdatingDurationSince({
-  startTS,
-  additionalDuration,
-}: {
-  startTS: number;
-  additionalDuration?: Duration;
-}) {
-  const [text, setText] = useState("??:??:??");
-
-  useEffect(() => {
-    const start = DateTime.fromMillis(startTS);
-    const update = () => {
-      let duration = Interval.fromDateTimes(start, DateTime.now()).toDuration();
-      if (additionalDuration) {
-        duration = duration.plus(additionalDuration);
-      }
-      setText(duration.toFormat("hh:mm:ss"));
-    };
-    update();
-    const interval = setInterval(update, 1000);
-    return () => clearInterval(interval);
-  }, [startTS, additionalDuration]);
-
-  return <>{text}</>;
-}
-
-function FormatedDuration({ duration }: { duration: Duration }) {
-  return <>{duration.toFormat("hh:mm:ss")}</>;
-}
-
 const FailedToEndQuickDurations = [
   Duration.fromObject({ minutes: 3 }),
   Duration.fromObject({ minutes: 5 }),
@@ -351,10 +325,6 @@ function FailedToEndDialog({
     SetDuration,
   }
   const [stage, setStage] = useState<Stage>(Stage.Options);
-
-  const dateTimeToInputMinMax = (time: DateTime) => {
-    return `${time.toFormat("yyyy-MM-dd")}T${time.toFormat("T")}`;
-  };
 
   const minEndTime = dateTimeToInputMinMax(DateTime.fromMillis(entry.start));
   const maxEndTime = dateTimeToInputMinMax(DateTime.now());

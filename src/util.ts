@@ -1,4 +1,7 @@
 // taken from https://blog.logrocket.com/react-suspense-data-fetching/#how-to-use-suspense
+
+import { DateTime } from "luxon";
+
 /** convert promise to suspend */
 export function wrapPromise<T>(promise: Promise<T>) {
   let status = "pending";
@@ -39,3 +42,7 @@ export function arrayMin(arr: number[]) {
   }
   return min;
 }
+
+export const dateTimeToInputMinMax = (time: DateTime) => {
+  return `${time.toFormat("yyyy-MM-dd")}T${time.toFormat("T")}`;
+};

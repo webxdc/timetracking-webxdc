@@ -24,6 +24,8 @@ function App() {
     return location.pathname.startsWith("/" + page) ? "active" : undefined;
   };
 
+  const LogInsteadOfTrack = true; // TODO settable by user in settings affecting all devices
+
   return (
     <div className="flex h-full flex-col" style={{ maxHeight: "100vh" }}>
       <div
@@ -38,7 +40,9 @@ function App() {
           onClick={() => navigate("/")}
         >
           <ClockIcon className="h-5 w-5" />
-          <span className="btm-nav-label">Track</span>
+          <span className="btm-nav-label">
+            {LogInsteadOfTrack ? "Log" : "Track"}
+          </span>
         </button>
         <button
           className={isActive("entries")}

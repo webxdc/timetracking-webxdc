@@ -13,6 +13,9 @@ import { DaysInMonthsPage } from "./pages/stats/DaysInMonthsPage";
 import { DaysInWeeksPage } from "./pages/stats/DaysInWeeksPage";
 import { TrackPage } from "./pages/TrackPage";
 import { CreateEntryPage } from "./pages/entries/CreateEntryPage";
+import { TimeLogPage } from "./pages/TimeLogPage";
+
+const LogInsteadOfTrack = true; // TODO settable by user in settings affecting all devices
 
 export const router = createHashRouter([
   {
@@ -22,7 +25,7 @@ export const router = createHashRouter([
     children: [
       {
         path: "/",
-        element: <TrackPage />,
+        element: LogInsteadOfTrack ? <TimeLogPage /> : <TrackPage />,
         index: true,
       },
       {

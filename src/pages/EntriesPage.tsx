@@ -1,7 +1,6 @@
 import {
   PencilIcon,
   PlayIcon,
-  PowerIcon,
   StopIcon,
   TrashIcon,
   VariableIcon,
@@ -9,6 +8,7 @@ import {
   EyeSlashIcon,
   PlusIcon,
   EllipsisVerticalIcon,
+  PauseCircleIcon,
 } from "@heroicons/react/24/outline";
 import {
   defaultRangeExtractor,
@@ -326,7 +326,7 @@ function Entry({
         {!entry.end && (
           <PlayIcon className="m-0.5 w-5 text-green-800 dark:text-green-400" />
         )}
-        {entry.is_break && <PowerIcon className="m-0.5 w-5" />}
+        {entry.is_break && <PauseCircleIcon className="m-0.5 w-5" />}
         {entry.deleted && <TrashIcon className="m-0.5 w-5 text-red-800" />}
         {entry.auto && <VariableIcon className="m-0.5 w-5" />}
       </div>
