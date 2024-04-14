@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix: going to "Statistics" crashing the app sometimes
+
 ## 0.8.0
 
 - small style fixes for stats view on small screens
