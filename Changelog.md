@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- feat: a way to pause active task from tasks list.
+  This allows to pause / unpause task by using just spacebar
+
 ## 0.8.0
 
 - small style fixes for stats view on small screens
