@@ -82,7 +82,7 @@ export function TaskDistributionPie({
           {labelsSortedWithPercentage.map((label) => (
             <tr>
               <td
-                key={btoa(label.label) + "-" + label.percentage}
+                key={label.label + "-" + label.percentage}
                 style={{ "--start": label.start, "--end": label.end }}
               >
                 <span className="data"></span>
@@ -96,7 +96,7 @@ export function TaskDistributionPie({
           {labelsSortedWithPercentage.map((label) => (
             <li
               className="w-full flex"
-              key={btoa(label.label) + "-" + label.percentage}
+              key={label.label + "-" + label.percentage}
             >
               <span className="flex-grow">
                 {label.label}: (
