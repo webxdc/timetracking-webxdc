@@ -4,6 +4,7 @@
 
 - feat: a way to pause active task from tasks list.
   This allows to pause / unpause task by using just spacebar
+- fix: going to "Statistics" crashing the app sometimes
 
 ## 0.8.0
 
