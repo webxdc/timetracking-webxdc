@@ -22,13 +22,22 @@ function QuickStartTask({
   timeSpendRefreshTS: DateTime;
   activeTask?: TaskEntry;
 }) {
-  const create = () => {
-    startEntry(label);
-  };
   let is_active = false;
   if (activeTask?.label === label) {
     is_active = true;
   }
+  const createOrStop = () => {
+    if (is_active) {
+      if (!activeTask) {
+        console.error("Attempted to pause. `is_active`, but no `activeTask`?");
+        return;
+      }
+
+      endEntry(activeTask.id);
+    } else {
+      startEntry(label);
+    }
+  };
 
   return (
     <div className="flex p-2">
@@ -42,8 +51,12 @@ function QuickStartTask({
         )}
       </div>
       <div className="flex-grow">{label}</div>
-      <button className="btn" onClick={create} disabled={is_active}>
-        <PlayIcon className="mr-0.5 w-5" />
+      <button className="btn" onClick={createOrStop}>
+        {is_active ? (
+          <StopIcon className="mr-0.5 w-5" />
+        ) : (
+          <PlayIcon className="mr-0.5 w-5" />
+        )}
       </button>
     </div>
   );
